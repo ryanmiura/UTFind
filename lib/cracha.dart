@@ -1,10 +1,63 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+
+
+
 
 class Cracha extends StatelessWidget {
   const Cracha({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var ryan = {
+      "pessNomeVc": "RYAN MIURA CARRASCO",
+      "alunEmailAlternVc": "",
+      "alunemail": "ryan@gmail.com",
+      "emInstAluemailVc": "r@alunos.utfpr.edu.br",
+      "estCivCodNr": 1,
+      "estCivDescrVc": "Solteiro(a)",
+      "login": "a2465779",
+      "matrbloqstatusNr": 0,
+      "paisNacioVc": "Brasileira",
+      "pessMaeVc": "F",
+      "pessNascDt": 1000,
+      "pessPaiVc": "",
+      "pessSexoCh": "M",
+      "tpBloqCodNr": 0,
+      "tpBloqDescrVc": "",
+      "situacaoPassaporte": 1,
+      "cursos": [
+        {
+          "alCuIdVc": "prdpnp",
+          "cursAbrevVc": "BACH ENG DE SOFTWARE",
+          "unidCodNr": 2,
+          "cursCodNr": 65,
+          "ultimaModificacao": null,
+          "cursNomeVc": "Bacharelado Em Engenharia De Software",
+          "tpCurCodNr": 2,
+          "tpCurDescrVc": "Bacharelado",
+          "sitpCodNr": 0,
+          "sitpDescrVc": "Regular",
+          "alCuAnoingNr": 2022,
+          "alCuPerAnoingNr": 1,
+          "alCuCategpgNr": 0,
+          "nivEnsCursoCodNr": 3,
+          "nivEnsDescrVc": "Ensino Superior",
+          "alCuOrdemNr": 1,
+          "alCuCalouroNr": 0,
+          "alCuColacaoDt": null,
+          "alCuPeriodoNr": 4,
+          "gradCodNr": 175,
+          "gradDescrVc": "Bacharelado Em Engenharia De Software",
+          "alCuCoefNr": 0.7748,
+          "alCuTurnoCh": "N",
+          "validadeCracha": "2025-12-31",
+          "anoVigente": 2023,
+          "periodoVigente": 2
+        }
+      ]
+    };
+    Map<String, dynamic> ryanMap = ryan;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -39,38 +92,29 @@ class Cracha extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            //color: Colors.black,
-                            width: 10,
-                            height: 80,
-                          ),
+                          SizedBox(height: 20,),
                           Text('NOME'),
                           Text(
-                            'Ryan Miura Carrasco',
+                            ryan["pessNomeVc"].toString(),
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold),
                           ),
-                          Container(
-                            //color: Colors.black,
-                            width: 10,
-                            height: 10,
-                          ),
+                          SizedBox(height: 10,),
                           Text('CAMPUS'),
                           Text(
-                            'Cornelio Procopio',
+                            "Cornelio Procopio",
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold),
                           ),
-                          Container(
-                            //color: Colors.black,
-                            width: 10,
+                          SizedBox(
+                            //color: Colors.black,//
                             height: 10,
                           ),
                           Row(
                             children: [
                               Text('CURSO '),
                               Text(
-                                '4 Periodo',
+                                ryanMap["cursos"][0]["alCuPeriodoNr"].toString() + "° Periodo",
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold),
@@ -78,18 +122,16 @@ class Cracha extends StatelessWidget {
                             ],
                           ),
                           Text(
-                            'Eng. de Software',
+                            ryanMap["cursos"][0]["cursNomeVc"].toString(),
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold),
                           ),
-                          Container(
-                            //color: Colors.black,
-                            width: 10,
-                            height: 50,
+                          SizedBox(
+                            height: 20,
                           ),
                           Text('VALIDADE'),
                           Text(
-                            '31/12/2026',
+                            ryanMap["cursos"][0]["validadeCracha"],
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold),
                           )
@@ -107,7 +149,7 @@ class Cracha extends StatelessWidget {
                         ),
                         Text('REGISTRO ACADEMICO'),
                         Text(
-                          '2465778',
+                          ryanMap["login"],
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),

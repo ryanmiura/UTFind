@@ -10,7 +10,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int currentPageIndex = 0;
+  int currentPageIndex = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +46,8 @@ class _HomePageState extends State<HomePage> {
             label: 'Crachá',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.assignment_ind),
-            icon: Icon(Icons.assignment_ind_outlined),
+            selectedIcon: Icon(Icons.fastfood),
+            icon: Icon(Icons.fastfood_outlined),
             label: 'Cardápio',
           ),
         ],
