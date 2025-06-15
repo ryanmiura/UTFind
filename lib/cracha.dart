@@ -91,50 +91,74 @@ class Cracha extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          SizedBox(height: 20,),
+                          SizedBox(height: 15),
                           Text('NOME'),
-                          Text(
-                            ryan["pessNomeVc"].toString(),
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                          Flexible(
+                            child: Text(
+                              ryan["pessNomeVc"].toString(),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
                           ),
-                          SizedBox(height: 10,),
+                          SizedBox(height: 8),
                           Text('CAMPUS'),
-                          Text(
-                            "Cornelio Procopio",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                          Flexible(
+                            child: Text(
+                              "Cornelio Procopio",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                          SizedBox(
-                            //color: Colors.black,//
-                            height: 10,
+                          SizedBox(height: 8),
+                          Flexible(
+                            child: Row(
+                              children: [
+                                Text('CURSO '),
+                                Expanded(
+                                  child: Text(
+                                    ryanMap["cursos"][0]["alCuPeriodoNr"].toString() + "° Periodo",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          Row(
-                            children: [
-                              Text('CURSO '),
-                              Text(
-                                ryanMap["cursos"][0]["alCuPeriodoNr"].toString() + "° Periodo",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            ],
+                          Flexible(
+                            child: Text(
+                              ryanMap["cursos"][0]["cursNomeVc"].toString(),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
                           ),
-                          Text(
-                            ryanMap["cursos"][0]["cursNomeVc"].toString(),
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 15),
                           Text('VALIDADE'),
-                          Text(
-                            ryanMap["cursos"][0]["validadeCracha"],
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          )
+                          Flexible(
+                            child: Text(
+                              ryanMap["cursos"][0]["validadeCracha"],
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ],
                       ),
                     ),
