@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:utfind/login_page.dart';
+import 'package:utfind/views/login_screen.dart';
 
 Future<void> main() async {
   // Carrega o arquivo .env
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         //useMaterial3: true,
         primarySwatch: Colors.amber,
       ),
-      home: const LoginPage(),
+      home: const LoginScreen(),
     );
   }
 }

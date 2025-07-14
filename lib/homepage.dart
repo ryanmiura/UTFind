@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:utfind/cracha.dart';
+import 'package:utfind/views/badge_screen.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
           alignment: Alignment.center,
           child: const Text('Tela 3 Inicio em andamento ...'),
         ),
-        Cracha(),
+        BadgeScreen(),
         Container(
           color: Colors.amber,
           alignment: Alignment.center,
