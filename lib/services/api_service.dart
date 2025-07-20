@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import 'package:utfind/utils/token_manager.dart';
+
 class ApiService {
   static String get baseUrl => dotenv.env['BASE_URL'] ?? '';
   final Dio _dio;
@@ -14,7 +16,24 @@ class ApiService {
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
         )) {
-    // Configurar interceptors futuramente para o JWT
+    // Interceptor para inserir JWT e lidar com expiração
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await TokenManager.getToken();
+          if (token != null && token.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          handler.next(options);
+        },
+        onError: (DioException error, handler) async {
+          if (error.response?.statusCode == 401) {
+            await TokenManager.deleteToken();
+          }
+          handler.next(error);
+        },
+      ),
+    );
   }
 
   /// Método genérico para requisições GET.
