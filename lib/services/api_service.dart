@@ -1,13 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 import 'package:utfind/utils/token_manager.dart';
 
+final String baseUrl = dotenv.env['API_BASE_URL'] ?? '';
 class ApiService {
-  static String get baseUrl => dotenv.env['BASE_URL'] ?? '';
   final Dio _dio;
-
-  // Token JWT opcional (não utilizado ainda)
   String? jwtToken;
 
   ApiService({this.jwtToken})
