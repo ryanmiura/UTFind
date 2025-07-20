@@ -81,6 +81,11 @@ class ApiService {
         data: data,
       );
 
+      // Salva o token JWT imediatamente após login bem-sucedido
+      final token = response.data['token'];
+      if (token != null && token is String && token.isNotEmpty) {
+        await TokenManager.saveToken(token);
+      }
       return response;
     } catch (e) {
       rethrow;
