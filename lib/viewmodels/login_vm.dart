@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:utfind/services/api_service.dart';
 
 class LoginViewModel extends ChangeNotifier {
   String _ra = '';
@@ -26,15 +27,14 @@ class LoginViewModel extends ChangeNotifier {
     _erro = null;
     notifyListeners();
 
-    // Simulação de autenticação
-    await Future.delayed(const Duration(seconds: 2));
-
-    // Exemplo: aceita ra e senha 123
-  if (_ra == "123" && _senha == "123") {
+    final apiService = ApiService();
+    try {
+      final response = await apiService.login(_ra, _senha);
+      // Considera sucesso se houver token salvo (já feito no ApiService)
       _loading = false;
       notifyListeners();
       return true;
-    } else {
+    } catch (e) {
       _loading = false;
       _erro = 'R.A. ou senha inválidos';
       notifyListeners();
