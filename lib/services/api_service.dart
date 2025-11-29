@@ -99,4 +99,28 @@ class ApiService {
     }
     return Options(headers: headers);
   }
+
+  Future <Response> getStudentData() async {
+    try {
+      const String endpoint = '/dados';
+      return await _dio.get(
+        endpoint,
+        options: _buildOptions(),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future <Response> getStudentPhoto() async {
+    try {
+      const String endpoint = '/fotoCracha';
+      return await _dio.get(
+        endpoint,
+        options: _buildOptions(),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
