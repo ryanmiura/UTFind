@@ -1,0 +1,22 @@
+meta {
+  name: Autenticacao
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{url}}/auth
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "{{username}}",
+    "password": "{{password}}"
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("token", res.body.token);
+}
