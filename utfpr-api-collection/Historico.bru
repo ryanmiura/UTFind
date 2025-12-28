@@ -1,0 +1,15 @@
+meta {
+  name: Historico
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}/{{curso}}/historico
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
