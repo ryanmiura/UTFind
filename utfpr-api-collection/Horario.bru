@@ -1,0 +1,15 @@
+meta {
+  name: Horario
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{url}}/{{curso}}/horario
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

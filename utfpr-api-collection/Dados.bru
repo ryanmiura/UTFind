@@ -1,0 +1,21 @@
+meta {
+  name: Dados
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/dados
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+script:post-response {
+  if(res.body.cursos && res.body.cursos.length > 0) {
+      bru.setEnvVar("curso", res.body.cursos[0].alCuIdVc);
+  }
+}
