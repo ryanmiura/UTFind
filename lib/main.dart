@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+import 'package:utfind/viewmodels/student_vm.dart';
 import 'package:utfind/views/login_screen.dart';
 
 Future<void> main() async {
@@ -13,15 +15,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        //colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
-        //useMaterial3: true,
-        primarySwatch: Colors.amber,
+    return MultiProvider(
+      providers: [
+        // Provider global para dados do estudante
+        ChangeNotifierProvider(
+          create: (_) => StudentViewModel(),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'UTFind',
+        theme: ThemeData(
+          //colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
+          //useMaterial3: true,
+          primarySwatch: Colors.amber,
+        ),
+        home: const LoginScreen(),
       ),
-      home: const LoginScreen(),
     );
   }
 }
