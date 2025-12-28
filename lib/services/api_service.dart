@@ -12,6 +12,10 @@ class ApiService {
           baseUrl: baseUrl,
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
         )) {
     // Interceptor para inserir JWT e lidar com expiração
     _dio.interceptors.add(
@@ -100,24 +104,26 @@ class ApiService {
     return Options(headers: headers);
   }
 
-  Future <Response> getStudentData() async {
+  Future<Response> getStudentData() async {
     try {
       const String endpoint = '/dados';
-      return await _dio.get(
-        endpoint,
-        options: _buildOptions(),
-      );
+      return await _dio.get(endpoint);
     } catch (e) {
       rethrow;
     }
   }
 
-  Future <Response> getStudentPhoto() async {
+  Future<Response> getStudentPhoto() async {
     try {
       const String endpoint = '/fotoCracha';
       return await _dio.get(
         endpoint,
-        options: _buildOptions(),
+        options: Options(
+          headers: {
+            'Accept': '*/*',  // Aceita qualquer tipo ao invés de forçar JSON
+          },
+          responseType: ResponseType.plain,  // Resposta é texto puro (BASE64)
+        ),
       );
     } catch (e) {
       rethrow;
