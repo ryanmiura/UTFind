@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:utfind/viewmodels/student_vm.dart';
 import 'package:utfind/views/badge_screen.dart';
 
 
@@ -11,6 +13,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentPageIndex = 3;
+
+  @override
+  void initState() {
+    super.initState();
+    // Agenda o carregamento dos dados do estudante para o próximo frame
+    // Isso permite que a tela seja construída primeiro, depois carrega os dados
+    Future.microtask(() {
+      if (mounted) {
+        context.read<StudentViewModel>().loadAllData();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,26 +67,18 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: <Widget>[
-        Container(
-          color: Colors.red,
-          alignment: Alignment.center,
-          child: const Text('Tela 1 Curso em andamento ...'),
+        const Center(
+          child: Text('Tela 1 Curso em andamento ...'),
         ),
-        Container(
-          color: Colors.green,
-          alignment: Alignment.center,
-          child: const Text('Tela 2 Horarios em andamento ...'),
+        const Center(
+          child: Text('Tela 2 Horarios em andamento ...'),
         ),
-        Container(
-          color: Colors.blue,
-          alignment: Alignment.center,
-          child: const Text('Tela 3 Inicio em andamento ...'),
+        const Center(
+          child: Text('Tela 3 Inicio em andamento ...'),
         ),
-        BadgeScreen(),
-        Container(
-          color: Colors.amber,
-          alignment: Alignment.center,
-          child: const Text('Tela 5 Cardápio em andamento ...'),
+        const BadgeScreen(),
+        const Center(
+          child: Text('Tela 5 Cardápio em andamento ...'),
         ),
 
       ][currentPageIndex],
