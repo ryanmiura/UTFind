@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:utfind/services/api_service.dart';
 
@@ -29,8 +30,7 @@ class LoginViewModel extends ChangeNotifier {
 
     final apiService = ApiService();
     try {
-      final response = await apiService.login(_ra, _senha);
-      // Considera sucesso se houver token salvo (já feito no ApiService)
+      await apiService.login(_ra, _senha);
       _loading = false;
       notifyListeners();
       return true;

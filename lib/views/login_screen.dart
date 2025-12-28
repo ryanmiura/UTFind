@@ -16,7 +16,7 @@ class LoginScreen extends StatelessWidget {
 }
 
 class _LoginScreenBody extends StatelessWidget {
-  const _LoginScreenBody({super.key});
+  const _LoginScreenBody();
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +101,7 @@ class _LoginScreenBody extends StatelessWidget {
                             if (sucesso && context.mounted) {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => HomePage()),
+                                MaterialPageRoute(builder: (context) => const HomePage()),
                               );
                             }
                           },
