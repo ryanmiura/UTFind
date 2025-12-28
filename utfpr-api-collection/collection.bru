@@ -1,0 +1,23 @@
+meta {
+  name: utfpr-api-collection
+  type: collection
+}
+
+script:pre-request {
+  var axios = require("axios");
+  var url = bru.getEnvVar("url");
+  var username = bru.getEnvVar("username");
+  var password = bru.getEnvVar("password");
+  
+  if(url && username && password) {
+      try {
+          var response = await axios.put(`${url}/auth`, {
+              username: username,
+              password: password
+          });
+          bru.setEnvVar("token", response.data.token);
+      } catch (error) {
+          console.error("Auth failed", error);
+      }
+  }
+}
