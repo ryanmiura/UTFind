@@ -1,0 +1,15 @@
+meta {
+  name: RU
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{url}}/rurefeicao
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

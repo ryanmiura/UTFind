@@ -1,0 +1,15 @@
+meta {
+  name: Matriz
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{url}}/{{curso}}/matriz
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
