@@ -1,0 +1,17 @@
+const Map<int, String> unitMapping = {
+  10: "Apucarana",
+  3: "Campo Mourão",
+  2: "Cornélio Procópio",
+  1: "Curitiba",
+  7: "Dois Vizinhos",
+  11: "Francisco Beltrão",
+  0: "Gerencial",
+  12: "Guarapuava",
+  8: "Londrina",
+  4: "Medianeira",
+  5: "Pato Branco",
+  6: "Ponta Grossa",
+  99: "Reitoria",
+  13: "Santa Helena",
+  9: "Toledo",
+};
