@@ -80,7 +80,7 @@ class BadgeScreen extends StatelessWidget {
                                       const Text('CAMPUS'),
                                       Flexible(
                                         child: Text(
-                                          "Cornelio Procopio",
+                                          curso != null ? curso.unidNome : "",
                                           style: const TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
