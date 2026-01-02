@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:barcode_widget/barcode_widget.dart';
 import '../viewmodels/badge_vm.dart';
 import '../models/badge.dart' as badge_model;
 
@@ -58,7 +59,8 @@ class BadgeScreen extends StatelessWidget {
                                   width: 150,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       const SizedBox(height: 15),
@@ -93,7 +95,9 @@ class BadgeScreen extends StatelessWidget {
                                             const Text('CURSO '),
                                             Expanded(
                                               child: Text(
-                                                (curso != null ? curso.tpCurDescrVc : ""),
+                                                (curso != null
+                                                    ? curso.tpCurDescrVc
+                                                    : ""),
                                                 style: const TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
@@ -119,7 +123,9 @@ class BadgeScreen extends StatelessWidget {
                                       const Text('VALIDADE'),
                                       Flexible(
                                         child: Text(
-                                          curso != null ? curso.validadeCracha : "",
+                                          curso != null
+                                              ? curso.validadeCracha
+                                              : "",
                                           style: const TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
@@ -163,7 +169,15 @@ class BadgeScreen extends StatelessWidget {
                                 bottomRight: Radius.circular(20.0),
                               ),
                             ),
-                            child: Image.asset('assets/barcode.png'),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 20),
+                            child: BarcodeWidget(
+                              barcode: Barcode.code39(),
+                              data: badge.formattedLoginForBarcode,
+                              drawText: false,
+                              color: Colors.black,
+                              backgroundColor: Colors.white,
+                            ),
                           ),
                         ],
                       ),

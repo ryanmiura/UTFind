@@ -132,6 +132,13 @@ class Badge {
     required this.cursos,
   });
 
+  String get formattedLoginForBarcode {
+    if (login.startsWith('a')) {
+      return '0${login.substring(1)}';
+    }
+    return login;
+  }
+
   factory Badge.fromJson(Map<String, dynamic> json) {
     return Badge(
       pessNomeVc: json['pessNomeVc'] ?? '',
