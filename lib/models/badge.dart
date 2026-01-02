@@ -1,7 +1,12 @@
+import '../constants/unit_constants.dart';
+
 class CursoBadge {
   final String alCuIdVc;
   final String cursAbrevVc;
   final int unidCodNr;
+  // ... rest of the fields
+
+  String get unidNome => unitMapping[unidCodNr] ?? 'Desconhecido';
   final int cursCodNr;
   final String? ultimaModificacao;
   final String cursNomeVc;
