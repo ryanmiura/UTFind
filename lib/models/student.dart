@@ -1,4 +1,7 @@
+import '../constants/unit_constants.dart';
+
 /// Modelo que representa os dados de um curso do estudante
+
 class Course {
   final String id;
   final String abbreviation;
@@ -86,6 +89,8 @@ class Course {
       currentAcademicPeriod: json['periodoVigente'] ?? 0,
     );
   }
+
+  String get campusName => unitMapping[campusCode] ?? 'Desconhecido';
 
   /// Helper method para converter valores para double
   static double _parseDouble(dynamic value) {
@@ -238,4 +243,15 @@ class Student {
 
   /// Retorna o coeficiente acadêmico
   double get academicCoefficient => primaryCourse?.coefficient ?? 0.0;
+
+  /// Retorna o nome do campus principal
+  String get campusName => primaryCourse?.campusName ?? 'Desconhecido';
+
+  /// Retorna o RA formatado para o código de barras (converte 'a' inicial para '0')
+  String get formattedRaForBarcode {
+    if (ra.startsWith('a')) {
+      return '0${ra.substring(1)}';
+    }
+    return ra;
+  }
 }
