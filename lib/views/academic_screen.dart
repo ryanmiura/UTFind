@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'history_screen.dart';
+import 'curriculum_screen.dart';
 
 class AcademicScreen extends StatelessWidget {
   const AcademicScreen({super.key});
@@ -14,12 +15,14 @@ class AcademicScreen extends StatelessWidget {
           bottom: const TabBar(
             tabs: [
               Tab(text: 'Histórico', icon: Icon(Icons.history_edu)),
+              Tab(text: 'Matriz', icon: Icon(Icons.table_chart)),
             ],
           ),
         ),
         body: const TabBarView(
           children: [
             HistoryScreen(),
+            CurriculumScreen(),
           ],
         ),
       ),
