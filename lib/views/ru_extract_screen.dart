@@ -48,6 +48,7 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
           return Column(
             children: [
               _buildSummaryCard(vm),
+              _buildFilterChips(vm),
               Expanded(
                 child: ListView.builder(
                   itemCount: keys.length,
@@ -94,6 +95,115 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
     );
   }
 
+  Widget _buildSummaryCard(RUExtractViewModel vm) {
+    // Calcular porcentagens para a barra de distribuição
+    double lunchPercent = 0;
+    double dinnerPercent = 0;
+    if (vm.totalMeals > 0) {
+      lunchPercent = vm.lunchCount / vm.totalMeals;
+      dinnerPercent = vm.dinnerCount / vm.totalMeals;
+    }
+
+    return Card(
+      margin: const EdgeInsets.all(16),
+      elevation: 4,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildSummaryItem('Gasto Total', 'R\$ ${vm.totalSpent.toStringAsFixed(2)}', Colors.red),
+                _buildSummaryItem('Economia', 'R\$ ${vm.totalSubsidy.toStringAsFixed(2)}', Colors.green),
+                _buildSummaryItem('Refeições', '${vm.totalMeals}', Colors.black),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Barra de Distribuição
+            if (vm.totalMeals > 0)
+              Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: SizedBox(
+                      height: 12,
+                      child: Row(
+                        children: [
+                          Expanded(flex: (lunchPercent * 100).toInt(), child: Container(color: Colors.orange)),
+                          Expanded(flex: (dinnerPercent * 100).toInt(), child: Container(color: Colors.indigo)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '${(lunchPercent * 100).toStringAsFixed(0)}% Almoço',
+                        style: TextStyle(color: Colors.orange[800], fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        '${(dinnerPercent * 100).toStringAsFixed(0)}% Jantar',
+                        style: TextStyle(color: Colors.indigo[800], fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterChips(RUExtractViewModel vm) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        children: [
+          _buildChip(vm, 'Todos'),
+          const SizedBox(width: 8),
+          _buildChip(vm, 'Almoço'),
+          const SizedBox(width: 8),
+          _buildChip(vm, 'Jantar'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChip(RUExtractViewModel vm, String label) {
+    final isSelected = vm.filterType == label;
+    return FilterChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (_) => vm.setFilter(label),
+      backgroundColor: Colors.grey[200],
+      selectedColor: Colors.amber[200],
+      checkmarkColor: Colors.black,
+      labelStyle: TextStyle(
+        color: isSelected ? Colors.black : Colors.black87,
+        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+      ),
+    );
+  }
+
+  Widget _buildSummaryItem(String label, String value, Color color) {
+    return Column(
+      children: [
+        Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color),
+        ),
+      ],
+    );
+  }
+
   Widget _buildMonthlySummary(int count, double spent, double saved) {
     return Row(
       children: [
@@ -121,38 +231,6 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
           color: color ?? Colors.grey[700],
         ),
       ),
-    );
-  }
-
-  Widget _buildSummaryCard(RUExtractViewModel vm) {
-    return Card(
-      margin: const EdgeInsets.all(16),
-      elevation: 4,
-      color: Colors.amber[50],
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildSummaryItem('Gasto Total', 'R\$ ${vm.totalSpent.toStringAsFixed(2)}', Colors.red),
-            _buildSummaryItem('Economia', 'R\$ ${vm.totalSubsidy.toStringAsFixed(2)}', Colors.green),
-            _buildSummaryItem('Refeições', '${vm.totalMeals}', Colors.black),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSummaryItem(String label, String value, Color color) {
-    return Column(
-      children: [
-        Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color),
-        ),
-      ],
     );
   }
 
