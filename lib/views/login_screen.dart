@@ -40,7 +40,7 @@ class _LoginScreenBody extends StatelessWidget {
 
                 // Campo R.A.
                 TextField(
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                     labelText: 'Registro Acadêmico (R.A.)',
                     prefixIcon: const Icon(Icons.person),
@@ -49,7 +49,8 @@ class _LoginScreenBody extends StatelessWidget {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Colors.amber, width: 2),
+                      borderSide:
+                          const BorderSide(color: Colors.amber, width: 2),
                     ),
                   ),
                   onChanged: vm.setRa,
@@ -68,7 +69,8 @@ class _LoginScreenBody extends StatelessWidget {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Colors.amber, width: 2),
+                      borderSide:
+                          const BorderSide(color: Colors.amber, width: 2),
                     ),
                   ),
                   onChanged: vm.setSenha,
@@ -82,7 +84,8 @@ class _LoginScreenBody extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Text(
                       vm.erro!,
-                      style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.bold),
                     ),
                   ),
 
@@ -101,7 +104,8 @@ class _LoginScreenBody extends StatelessWidget {
                             if (sucesso && context.mounted) {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => const HomePage()),
+                                MaterialPageRoute(
+                                    builder: (context) => const HomePage()),
                               );
                             }
                           },
