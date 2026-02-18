@@ -55,14 +55,29 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
                     final monthKey = keys[index];
                     final meals = vm.groupedMeals[monthKey]!;
                     
+                    // Calcular totais do mês
+                    double monthlySpent = 0;
+                    double monthlySubsidy = 0;
+                    for (var meal in meals) {
+                      monthlySpent += meal.paidAmount;
+                      monthlySubsidy += meal.subsidyAmount;
+                    }
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          child: Text(
-                            monthKey,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                monthKey,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black87),
+                              ),
+                              const SizedBox(height: 4),
+                              _buildMonthlySummary(meals.length, monthlySpent, monthlySubsidy),
+                            ],
                           ),
                         ),
                         ...meals.map((meal) => _buildMealItem(meal)).toList(),
@@ -75,6 +90,36 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
             ],
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildMonthlySummary(int count, double spent, double saved) {
+    return Row(
+      children: [
+        _buildMonthlyStat('Refeições: $count'),
+        const SizedBox(width: 12),
+        _buildMonthlyStat('Gasto: R\$ ${spent.toStringAsFixed(2)}'),
+        const SizedBox(width: 12),
+        _buildMonthlyStat('Econ: R\$ ${saved.toStringAsFixed(2)}', color: Colors.green[700]),
+      ],
+    );
+  }
+
+  Widget _buildMonthlyStat(String text, {Color? color}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: (color ?? Colors.grey[600])!.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: color ?? Colors.grey[700],
+        ),
       ),
     );
   }
