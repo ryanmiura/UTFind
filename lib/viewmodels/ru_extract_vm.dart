@@ -10,11 +10,19 @@ class RUExtractViewModel extends ChangeNotifier {
 
   RULoadingState _state = RULoadingState.initial;
   String? _errorMessage;
-  List<RUMeal> _meals = [];
+  List<RUMeal> _allMeals = []; // Lista original completa
+  List<RUMeal> _meals = []; // Lista filtrada
   Map<String, List<RUMeal>> _groupedMeals = {};
   double _totalSpent = 0.0;
   double _totalSubsidy = 0.0;
   int _totalMeals = 0;
+  
+  // Estatísticas
+  int _lunchCount = 0;
+  int _dinnerCount = 0;
+
+  // Filtro
+  String _filterType = 'Todos'; // Todos, Almoço, Jantar
 
   RUExtractViewModel({ApiService? apiService})
       : _apiService = apiService ?? ApiService();
@@ -26,6 +34,9 @@ class RUExtractViewModel extends ChangeNotifier {
   double get totalSpent => _totalSpent;
   double get totalSubsidy => _totalSubsidy;
   int get totalMeals => _totalMeals;
+  int get lunchCount => _lunchCount;
+  int get dinnerCount => _dinnerCount;
+  String get filterType => _filterType;
 
   Future<void> loadMeals() async {
     if (_state == RULoadingState.loading) return;
@@ -39,30 +50,16 @@ class RUExtractViewModel extends ChangeNotifier {
       
       if (response.data != null && response.data is List) {
         final list = response.data as List;
-        _meals = list.map((e) => RUMeal.fromJson(e)).toList();
+        _allMeals = list.map((e) => RUMeal.fromJson(e)).toList();
         
         // Ordenar por data (decrescente)
-        _meals.sort((a, b) => b.date.compareTo(a.date));
+        _allMeals.sort((a, b) => b.date.compareTo(a.date));
 
-        // Calcular totais
-        _totalSpent = 0.0;
-        _totalSubsidy = 0.0;
-        _totalMeals = _meals.length;
+        // Calcular estatísticas globais
+        _calculateStats();
 
-        for (var meal in _meals) {
-          _totalSpent += meal.paidAmount;
-          _totalSubsidy += meal.subsidyAmount;
-        }
-
-        // Agrupar por Mês/Ano (ex: "Janeiro/2023")
-        _groupedMeals = {};
-        for (var meal in _meals) {
-          final key = '${_getMonthName(meal.date.month)}/${meal.date.year}';
-          if (!_groupedMeals.containsKey(key)) {
-            _groupedMeals[key] = [];
-          }
-          _groupedMeals[key]!.add(meal);
-        }
+        // Aplicar filtro inicial (Todos) e agrupar
+        _applyFilter();
       }
 
       _state = RULoadingState.loaded;
@@ -74,6 +71,50 @@ class RUExtractViewModel extends ChangeNotifier {
       _errorMessage = 'Erro inesperado: $e';
     } finally {
       notifyListeners();
+    }
+  }
+
+  void setFilter(String type) {
+    if (_filterType == type) return;
+    _filterType = type;
+    _applyFilter();
+    notifyListeners();
+  }
+
+  void _calculateStats() {
+    _totalSpent = 0.0;
+    _totalSubsidy = 0.0;
+    _totalMeals = _allMeals.length;
+    _lunchCount = 0;
+    _dinnerCount = 0;
+
+    for (var meal in _allMeals) {
+      _totalSpent += meal.paidAmount;
+      _totalSubsidy += meal.subsidyAmount;
+      
+      if (meal.type.toLowerCase().contains('almoço')) {
+        _lunchCount++;
+      } else if (meal.type.toLowerCase().contains('jantar')) {
+        _dinnerCount++;
+      }
+    }
+  }
+
+  void _applyFilter() {
+    if (_filterType == 'Todos') {
+      _meals = List.from(_allMeals);
+    } else {
+      _meals = _allMeals.where((m) => m.type.toLowerCase().contains(_filterType.toLowerCase())).toList();
+    }
+
+    // Reagrupar com base na lista filtrada
+    _groupedMeals = {};
+    for (var meal in _meals) {
+      final key = '${_getMonthName(meal.date.month)}/${meal.date.year}';
+      if (!_groupedMeals.containsKey(key)) {
+        _groupedMeals[key] = [];
+      }
+      _groupedMeals[key]!.add(meal);
     }
   }
 
