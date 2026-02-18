@@ -33,6 +33,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Create empty .env file
+        run: touch .env
+
       - name: Install Cider (Version Manager)
         run: flutter pub global activate cider
 
