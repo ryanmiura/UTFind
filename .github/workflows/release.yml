@@ -57,8 +57,8 @@ jobs:
           export PATH="$PATH":"$HOME/.pub-cache/bin"
           BUMP_TYPE=${{ steps.version_bump.outputs.type }}
           
-          # Incrementa a versão e o build number (+1)
-          cider bump $BUMP_TYPE --build
+          # Incrementa a versão e o build number
+          cider bump $BUMP_TYPE --bump-build
           
           NEW_VERSION=$(cider version)
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
