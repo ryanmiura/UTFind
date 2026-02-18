@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:utfind/services/api_service.dart';
@@ -34,9 +35,22 @@ class LoginViewModel extends ChangeNotifier {
       _loading = false;
       notifyListeners();
       return true;
+    } on DioException catch (e) {
+      _loading = false;
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.connectionError) {
+        _erro = 'Erro de conexão. Verifique sua internet.';
+      } else if (e.response?.statusCode == 401) {
+        _erro = 'R.A. ou senha inválidos';
+      } else {
+        _erro = 'Erro ao autenticar. Tente novamente.';
+      }
+      notifyListeners();
+      return false;
     } catch (e) {
       _loading = false;
-      _erro = 'R.A. ou senha inválidos';
+      _erro = 'Ocorreu um erro inesperado';
       notifyListeners();
       return false;
     }
