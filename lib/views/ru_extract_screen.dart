@@ -25,17 +25,6 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Extrato do RU'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.bar_chart),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const RUStatisticsScreen()),
-              );
-            },
-          ),
-        ],
       ),
       body: Consumer<RUExtractViewModel>(
         builder: (context, vm, child) {
@@ -110,12 +99,39 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
       color: Colors.amber[50],
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        child: Column(
           children: [
-            _buildSummaryItem('Gasto Total', 'R\$ ${vm.totalSpent.toStringAsFixed(2)}', Colors.red),
-            _buildSummaryItem('Economia', 'R\$ ${vm.totalSubsidy.toStringAsFixed(2)}', Colors.green),
-            _buildSummaryItem('Refeições', '${vm.totalMeals}', Colors.black),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildSummaryItem('Gasto Total', 'R\$ ${vm.totalSpent.toStringAsFixed(2)}', Colors.red),
+                _buildSummaryItem('Economia', 'R\$ ${vm.totalSubsidy.toStringAsFixed(2)}', Colors.green),
+                _buildSummaryItem('Refeições', '${vm.totalMeals}', Colors.black),
+              ],
+            ),
+            const Divider(height: 24, thickness: 1),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RUStatisticsScreen()),
+                );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text(
+                    'Estatísticas',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  Icon(Icons.chevron_right, size: 20),
+                ],
+              ),
+            ),
           ],
         ),
       ),
