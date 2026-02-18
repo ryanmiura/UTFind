@@ -93,46 +93,75 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
   }
 
   Widget _buildSummaryCard(RUExtractViewModel vm) {
-    return Card(
-      margin: const EdgeInsets.all(16),
-      elevation: 4,
-      color: Colors.amber[50],
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildSummaryItem('Gasto Total', 'R\$ ${vm.totalSpent.toStringAsFixed(2)}', Colors.red),
-                _buildSummaryItem('Economia', 'R\$ ${vm.totalSubsidy.toStringAsFixed(2)}', Colors.green),
-                _buildSummaryItem('Refeições', '${vm.totalMeals}', Colors.black),
-              ],
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      // Adiciona sombra abaixo do recorte
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
-            const Divider(height: 24, thickness: 1),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const RUStatisticsScreen()),
-                );
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
-                    'Estatísticas',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: Colors.black87,
+          ],
+        ),
+        child: ClipPath(
+          clipper: ReceiptClipper(),
+          child: Container(
+            color: Colors.amber[50],
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+              child: Column(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  Icon(Icons.chevron_right, size: 20),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildSummaryItem('Gasto Total', 'R\$ ${vm.totalSpent.toStringAsFixed(2)}', Colors.red),
+                      _buildSummaryItem('Economia', 'R\$ ${vm.totalSubsidy.toStringAsFixed(2)}', Colors.green),
+                      _buildSummaryItem('Refeições', '${vm.totalMeals}', Colors.black),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const Divider(height: 1, thickness: 1, color: Colors.black12, indent: 8, endIndent: 8),
+                  const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const RUStatisticsScreen()),
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'VER ESTATÍSTICAS',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            letterSpacing: 1.2,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(Icons.bar_chart, size: 16, color: Colors.grey[800]),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -247,4 +276,43 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
       ),
     );
   }
+}
+
+class ReceiptClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    const double radius = 16.0;
+    
+    // Top-left corner
+    path.moveTo(0, radius);
+    path.quadraticBezierTo(0, 0, radius, 0);
+    
+    // Top-right corner
+    path.lineTo(size.width - radius, 0);
+    path.quadraticBezierTo(size.width, 0, size.width, radius);
+    
+    // Right side down
+    path.lineTo(size.width, size.height - 10);
+    
+    // Serrated bottom edge
+    const int numberOfTeeth = 30; 
+    final double toothWidth = size.width / numberOfTeeth;
+    const double toothHeight = 6.0;
+
+    for (int i = 0; i < numberOfTeeth; i++) {
+      double x = size.width - (i * toothWidth);
+      path.lineTo(x - toothWidth / 2, size.height);
+      path.lineTo(x - toothWidth, size.height - 10);
+    }
+
+    // Left side up
+    path.lineTo(0, radius);
+    
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
