@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/ru_extract_vm.dart';
 import '../models/ru_meal.dart';
+import 'ru_statistics_screen.dart';
 
 class RUExtractScreen extends StatefulWidget {
   const RUExtractScreen({super.key});
@@ -24,6 +25,17 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Extrato do RU'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.bar_chart),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const RUStatisticsScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: Consumer<RUExtractViewModel>(
         builder: (context, vm, child) {
@@ -40,10 +52,6 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
           }
 
           final keys = vm.groupedMeals.keys.toList();
-          // Ordenar chaves: precisa converter "Janeiro/2023" para data para ordenar corretamente
-          // Como já ordenamos a lista original por data decrescente, e iteramos nela para agrupar,
-          // as chaves devem estar na ordem de inserção (se Map preservar ordem, o que Map padrão faz em Dart).
-          // Mas para garantir, podemos confiar na ordem de inserção do LinkedHashMap padrão.
           
           return Column(
             children: [
@@ -96,64 +104,18 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
   }
 
   Widget _buildSummaryCard(RUExtractViewModel vm) {
-    // Calcular porcentagens para a barra de distribuição
-    double lunchPercent = 0;
-    double dinnerPercent = 0;
-    if (vm.totalMeals > 0) {
-      lunchPercent = vm.lunchCount / vm.totalMeals;
-      dinnerPercent = vm.dinnerCount / vm.totalMeals;
-    }
-
     return Card(
       margin: const EdgeInsets.all(16),
       elevation: 4,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: Colors.amber[50],
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildSummaryItem('Gasto Total', 'R\$ ${vm.totalSpent.toStringAsFixed(2)}', Colors.red),
-                _buildSummaryItem('Economia', 'R\$ ${vm.totalSubsidy.toStringAsFixed(2)}', Colors.green),
-                _buildSummaryItem('Refeições', '${vm.totalMeals}', Colors.black),
-              ],
-            ),
-            const SizedBox(height: 16),
-            // Barra de Distribuição
-            if (vm.totalMeals > 0)
-              Column(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: SizedBox(
-                      height: 12,
-                      child: Row(
-                        children: [
-                          Expanded(flex: (lunchPercent * 100).toInt(), child: Container(color: Colors.orange)),
-                          Expanded(flex: (dinnerPercent * 100).toInt(), child: Container(color: Colors.indigo)),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${(lunchPercent * 100).toStringAsFixed(0)}% Almoço',
-                        style: TextStyle(color: Colors.orange[800], fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        '${(dinnerPercent * 100).toStringAsFixed(0)}% Jantar',
-                        style: TextStyle(color: Colors.indigo[800], fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            _buildSummaryItem('Gasto Total', 'R\$ ${vm.totalSpent.toStringAsFixed(2)}', Colors.red),
+            _buildSummaryItem('Economia', 'R\$ ${vm.totalSubsidy.toStringAsFixed(2)}', Colors.green),
+            _buildSummaryItem('Refeições', '${vm.totalMeals}', Colors.black),
           ],
         ),
       ),
