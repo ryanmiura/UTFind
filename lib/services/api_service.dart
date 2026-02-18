@@ -129,4 +129,13 @@ class ApiService {
       rethrow;
     }
   }
+
+  Future<Response> getRUMeals() async {
+    try {
+      return await _dio.get('/rurefeicao');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 }
