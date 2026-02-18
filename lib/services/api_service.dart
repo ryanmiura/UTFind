@@ -139,6 +139,16 @@ class ApiService {
   }
 
 
+  Future<Response> getHistory() async {
+    try {
+      final courseId = await TokenManager.getCourseId();
+      if (courseId == null) throw Exception('ID do curso não encontrado');
+      return await _dio.get('/$courseId/historico');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 
 
   Future<Response> getUnits() async {
