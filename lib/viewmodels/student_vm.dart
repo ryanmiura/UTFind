@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import '../models/student.dart';
 import '../services/api_service.dart';
+import '../utils/token_manager.dart';
 
 enum StudentLoadingState {
   initial,
@@ -66,6 +67,13 @@ class StudentViewModel extends ChangeNotifier {
       if (studentDataResponse.data != null) {
         _student =
             Student.fromJson(studentDataResponse.data as Map<String, dynamic>);
+        
+        // Salva o ID do curso principal para uso futuro em outras chamadas
+        final courseId = _student?.primaryCourse?.id;
+        if (courseId != null) {
+          await TokenManager.saveCourseId(courseId);
+        }
+
       } else {
         throw Exception('Dados do estudante vazios');
       }
