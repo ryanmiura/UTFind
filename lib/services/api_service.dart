@@ -149,7 +149,15 @@ class ApiService {
     }
   }
 
-
+  Future<Response> getCurriculum() async {
+    try {
+      final courseId = await TokenManager.getCourseId();
+      if (courseId == null) throw Exception('ID do curso não encontrado');
+      return await _dio.get('/$courseId/matriz');
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   Future<Response> getUnits() async {
     try {
