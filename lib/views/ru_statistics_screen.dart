@@ -21,11 +21,119 @@ class RUStatisticsScreen extends StatelessWidget {
               children: [
                 _buildDistributionCard(vm),
                 const SizedBox(height: 24),
+                _buildMealsTrendChart(vm),
+                const SizedBox(height: 24),
                 _buildSpendingChart(vm),
               ],
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildMealsTrendChart(RUExtractViewModel vm) {
+    // Processar dados para o gráfico (últimos 6 meses)
+    final grouped = vm.groupedMeals;
+    final keys = grouped.keys.toList(); // Já devem estar ordenados decrescente
+    
+    // Pegar os últimos 6 meses
+    final recentKeys = keys.take(6).toList().reversed.toList();
+
+    if (recentKeys.isEmpty) return const SizedBox.shrink();
+
+    // Encontrar o valor máximo de refeições para escala
+    int maxMeals = 0;
+    for (var key in recentKeys) {
+      if (grouped[key]!.length > maxMeals) maxMeals = grouped[key]!.length;
+    }
+
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Tendência de Refeições (Últimos 6 meses)',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              height: 200,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: recentKeys.map((key) {
+                  final meals = grouped[key]!;
+                  int lunchCount = 0;
+                  int dinnerCount = 0;
+                  for (var m in meals) {
+                    if (m.type.toLowerCase().contains('almoço')) {
+                      lunchCount++;
+                    } else {
+                      dinnerCount++;
+                    }
+                  }
+                  
+                  final totalHeight = 150.0; // Altura máxima da barra
+                  final lunchHeight = maxMeals > 0 ? (lunchCount / maxMeals) * totalHeight : 0.0;
+                  final dinnerHeight = maxMeals > 0 ? (dinnerCount / maxMeals) * totalHeight : 0.0;
+                  
+                  // Extrair apenas o mês (ex: "Setembro/2023" -> "Set")
+                  final monthShort = key.split('/').first.substring(0, 3);
+
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        '${lunchCount + dinnerCount}',
+                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Container(
+                        width: 30,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: dinnerHeight,
+                              width: 30,
+                              decoration: const BoxDecoration(
+                                color: Colors.indigo,
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+                              ),
+                            ),
+                            Container(
+                              height: lunchHeight,
+                              width: 30,
+                              color: Colors.orange,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(monthShort, style: const TextStyle(fontSize: 12)),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildLegendItem('Almoço', '', Colors.orange),
+                const SizedBox(width: 16),
+                _buildLegendItem('Jantar', '', Colors.indigo),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
