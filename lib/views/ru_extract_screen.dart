@@ -126,6 +126,7 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             'R\$ ${meal.paidAmount.toStringAsFixed(2)}',
@@ -135,6 +136,11 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
             const Text(
               'GRATUITO',
               style: TextStyle(color: Colors.green, fontSize: 10, fontWeight: FontWeight.bold),
+            ),
+          if (meal.subsidyAmount > 0)
+            Text(
+              'Subsídio: R\$ ${meal.subsidyAmount.toStringAsFixed(2)}',
+              style: TextStyle(color: Colors.green[700], fontSize: 11),
             ),
         ],
       ),
