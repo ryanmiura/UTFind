@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utfind/viewmodels/student_vm.dart';
 import 'package:utfind/views/badge_screen.dart';
+import 'package:utfind/views/units_screen.dart';
+import 'package:utfind/views/ru_extract_screen.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -45,9 +47,9 @@ class _HomePageState extends State<HomePage> {
             label: 'Curso',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.calendar_month),
-            icon: Icon(Icons.calendar_month_outlined),
-            label: 'Horários',
+            selectedIcon: Icon(Icons.location_on),
+            icon: Icon(Icons.location_on_outlined),
+            label: 'Câmpus',
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.home),
@@ -60,27 +62,19 @@ class _HomePageState extends State<HomePage> {
             label: 'Crachá',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.fastfood),
-            icon: Icon(Icons.fastfood_outlined),
-            label: 'Cardápio',
+            selectedIcon: Icon(Icons.restaurant),
+            icon: Icon(Icons.restaurant_outlined),
+            label: 'RU',
           ),
         ],
       ),
       body: <Widget>[
+        const UnitsScreen(),
         const Center(
-          child: Text('Tela 1 Curso em andamento ...'),
-        ),
-        const Center(
-          child: Text('Tela 2 Horarios em andamento ...'),
-        ),
-        const Center(
-          child: Text('Tela 3 Inicio em andamento ...'),
+          child: Text('Bem-vindo ao UTFind!'),
         ),
         const BadgeScreen(),
-        const Center(
-          child: Text('Tela 5 Cardápio em andamento ...'),
-        ),
-
+        const RUExtractScreen(),
       ][currentPageIndex],
     );
   }

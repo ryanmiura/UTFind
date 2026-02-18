@@ -138,4 +138,14 @@ class ApiService {
     }
   }
 
+
+
+
+  Future<Response> getUnits() async {
+    try {
+      return await _dio.get('/unidades');
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

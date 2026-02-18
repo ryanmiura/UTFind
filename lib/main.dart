@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:utfind/viewmodels/student_vm.dart';
+
+import 'package:utfind/viewmodels/ru_extract_vm.dart';
+import 'package:utfind/viewmodels/units_vm.dart';
 import 'package:utfind/views/login_screen.dart';
 
 Future<void> main() async {
@@ -18,9 +21,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         // Provider global para dados do estudante
-        ChangeNotifierProvider(
-          create: (_) => StudentViewModel(),
-        ),
+        ChangeNotifierProvider(create: (_) => StudentViewModel()),
+        ChangeNotifierProvider(create: (_) => RUExtractViewModel()),
+        ChangeNotifierProvider(create: (_) => UnitsViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
