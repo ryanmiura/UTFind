@@ -33,7 +33,8 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
           }
 
           if (vm.state == RULoadingState.error) {
-            return Center(child: Text(vm.errorMessage ?? 'Erro ao carregar extrato'));
+            return Center(
+                child: Text(vm.errorMessage ?? 'Erro ao carregar extrato'));
           }
 
           if (vm.meals.isEmpty) {
@@ -41,48 +42,57 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
           }
 
           final keys = vm.groupedMeals.keys.toList();
-          
+
           return Column(
             children: [
               _buildSummaryCard(vm),
               _buildFilterChips(vm),
               Expanded(
-                child: ListView.builder(
-                  itemCount: keys.length,
-                  itemBuilder: (context, index) {
-                    final monthKey = keys[index];
-                    final meals = vm.groupedMeals[monthKey]!;
-                    
-                    // Calcular totais do mês
-                    double monthlySpent = 0;
-                    double monthlySubsidy = 0;
-                    for (var meal in meals) {
-                      monthlySpent += meal.paidAmount;
-                      monthlySubsidy += meal.subsidyAmount;
-                    }
+                child: RefreshIndicator(
+                  onRefresh: () => vm.loadMeals(),
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: keys.length,
+                    itemBuilder: (context, index) {
+                      final monthKey = keys[index];
+                      final meals = vm.groupedMeals[monthKey]!;
 
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                monthKey,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black87),
-                              ),
-                              const SizedBox(height: 4),
-                              _buildMonthlySummary(meals.length, monthlySpent, monthlySubsidy),
-                            ],
+                      // Calcular totais do mês
+                      double monthlySpent = 0;
+                      double monthlySubsidy = 0;
+                      for (var meal in meals) {
+                        monthlySpent += meal.paidAmount;
+                        monthlySubsidy += meal.subsidyAmount;
+                      }
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  monthKey,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Colors.black87),
+                                ),
+                                const SizedBox(height: 4),
+                                _buildMonthlySummary(
+                                    meals.length, monthlySpent, monthlySubsidy),
+                              ],
+                            ),
                           ),
-                        ),
-                        ...meals.map((meal) => _buildMealItem(meal)).toList(),
-                        const Divider(),
-                      ],
-                    );
-                  },
+                          ...meals.map((meal) => _buildMealItem(meal)).toList(),
+                          const Divider(),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
@@ -126,19 +136,32 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _buildSummaryItem('Gasto Total', 'R\$ ${vm.totalSpent.toStringAsFixed(2)}', Colors.red),
-                      _buildSummaryItem('Economia', 'R\$ ${vm.totalSubsidy.toStringAsFixed(2)}', Colors.green),
-                      _buildSummaryItem('Refeições', '${vm.totalMeals}', Colors.black),
+                      _buildSummaryItem(
+                          'Gasto Total',
+                          'R\$ ${vm.totalSpent.toStringAsFixed(2)}',
+                          Colors.red),
+                      _buildSummaryItem(
+                          'Economia',
+                          'R\$ ${vm.totalSubsidy.toStringAsFixed(2)}',
+                          Colors.green),
+                      _buildSummaryItem(
+                          'Refeições', '${vm.totalMeals}', Colors.black),
                     ],
                   ),
                   const SizedBox(height: 16),
-                  const Divider(height: 1, thickness: 1, color: Colors.black12, indent: 8, endIndent: 8),
+                  const Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: Colors.black12,
+                      indent: 8,
+                      endIndent: 8),
                   const SizedBox(height: 16),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const RUStatisticsScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => const RUStatisticsScreen()),
                       );
                     },
                     child: Row(
@@ -154,7 +177,8 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
                           ),
                         ),
                         const SizedBox(width: 4),
-                        Icon(Icons.bar_chart, size: 16, color: Colors.grey[800]),
+                        Icon(Icons.bar_chart,
+                            size: 16, color: Colors.grey[800]),
                       ],
                     ),
                   ),
@@ -205,7 +229,8 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
         const SizedBox(height: 4),
         Text(
           value,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color),
+          style: TextStyle(
+              fontSize: 16, fontWeight: FontWeight.bold, color: color),
         ),
       ],
     );
@@ -218,7 +243,8 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
         const SizedBox(width: 12),
         _buildMonthlyStat('Gasto: R\$ ${spent.toStringAsFixed(2)}'),
         const SizedBox(width: 12),
-        _buildMonthlyStat('Econ: R\$ ${saved.toStringAsFixed(2)}', color: Colors.green[700]),
+        _buildMonthlyStat('Econ: R\$ ${saved.toStringAsFixed(2)}',
+            color: Colors.green[700]),
       ],
     );
   }
@@ -265,7 +291,10 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
           if (meal.paidAmount == 0)
             const Text(
               'GRATUITO',
-              style: TextStyle(color: Colors.green, fontSize: 10, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: Colors.green,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold),
             ),
           if (meal.subsidyAmount > 0)
             Text(
@@ -283,20 +312,20 @@ class ReceiptClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     final path = Path();
     const double radius = 16.0;
-    
+
     // Top-left corner
     path.moveTo(0, radius);
     path.quadraticBezierTo(0, 0, radius, 0);
-    
+
     // Top-right corner
     path.lineTo(size.width - radius, 0);
     path.quadraticBezierTo(size.width, 0, size.width, radius);
-    
+
     // Right side down
     path.lineTo(size.width, size.height - 10);
-    
+
     // Serrated bottom edge
-    const int numberOfTeeth = 30; 
+    const int numberOfTeeth = 30;
     final double toothWidth = size.width / numberOfTeeth;
     const double toothHeight = 6.0;
 
@@ -308,7 +337,7 @@ class ReceiptClipper extends CustomClipper<Path> {
 
     // Left side up
     path.lineTo(0, radius);
-    
+
     path.close();
     return path;
   }
