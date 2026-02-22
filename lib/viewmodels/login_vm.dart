@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:utfind/services/api_service.dart';
+import 'package:utfind/utils/token_manager.dart';
 
 class LoginViewModel extends ChangeNotifier {
   String _ra = '';
@@ -51,6 +52,32 @@ class LoginViewModel extends ChangeNotifier {
     } catch (e) {
       _loading = false;
       _erro = 'Ocorreu um erro inesperado';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> tryAutomaticLogin() async {
+    _loading = true;
+    _erro = null;
+    notifyListeners();
+
+    final credenciais = await TokenManager.getCredentials();
+    if (credenciais == null) {
+      _loading = false;
+      notifyListeners();
+      return false;
+    }
+
+    final apiService = ApiService();
+    try {
+      await apiService.login(credenciais['ra']!, credenciais['password']!);
+      _loading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      // Falha silenciosa ou token expirado
+      _loading = false;
       notifyListeners();
       return false;
     }
