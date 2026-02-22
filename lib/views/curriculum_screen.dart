@@ -32,7 +32,8 @@ class _CurriculumScreenState extends State<CurriculumScreen> {
           }
 
           if (vm.state == CurriculumLoadingState.error) {
-            return Center(child: Text(vm.errorMessage ?? 'Erro ao carregar matriz'));
+            return Center(
+                child: Text(vm.errorMessage ?? 'Erro ao carregar matriz'));
           }
 
           if (vm.curriculum.isEmpty) {
@@ -46,20 +47,26 @@ class _CurriculumScreenState extends State<CurriculumScreen> {
             children: [
               _buildProgressCard(vm),
               Expanded(
-                child: ListView.builder(
-                  itemCount: keys.length,
-                  itemBuilder: (context, index) {
-                    final period = keys[index];
-                    final subjects = vm.groupedCurriculum[period]!;
-                    
-                    return ExpansionTile(
-                      title: Text(
-                        '${period}º Período',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      children: subjects.map((subj) => _buildSubjectItem(subj)).toList(),
-                    );
-                  },
+                child: RefreshIndicator(
+                  onRefresh: () => vm.loadCurriculum(),
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: keys.length,
+                    itemBuilder: (context, index) {
+                      final period = keys[index];
+                      final subjects = vm.groupedCurriculum[period]!;
+
+                      return ExpansionTile(
+                        title: Text(
+                          '${period}º Período',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        children: subjects
+                            .map((subj) => _buildSubjectItem(subj))
+                            .toList(),
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

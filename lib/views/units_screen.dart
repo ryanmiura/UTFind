@@ -32,18 +32,23 @@ class _UnitsScreenState extends State<UnitsScreen> {
           }
 
           if (vm.state == UnitsLoadingState.error) {
-            return Center(child: Text(vm.errorMessage ?? 'Erro ao carregar unidades'));
+            return Center(
+                child: Text(vm.errorMessage ?? 'Erro ao carregar unidades'));
           }
 
           if (vm.units.isEmpty) {
             return const Center(child: Text('Nenhuma unidade encontrada.'));
           }
 
-          return ListView.builder(
-            itemCount: vm.units.length,
-            itemBuilder: (context, index) {
-              return _buildUnitCard(vm.units[index]);
-            },
+          return RefreshIndicator(
+            onRefresh: () => vm.loadUnits(),
+            child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: vm.units.length,
+              itemBuilder: (context, index) {
+                return _buildUnitCard(vm.units[index]);
+              },
+            ),
           );
         },
       ),
@@ -96,7 +101,9 @@ class _UnitsScreenState extends State<UnitsScreen> {
                 FilledButton.icon(
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Abrir mapa: ${unit.lat}, ${unit.long}')),
+                      SnackBar(
+                          content:
+                              Text('Abrir mapa: ${unit.lat}, ${unit.long}')),
                     );
                   },
                   icon: const Icon(Icons.map),
