@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:utfind/utils/token_manager.dart';
 
 final String baseUrl = dotenv.env['API_BASE_URL'] ?? '';
+
 class ApiService {
   final Dio _dio;
   String? jwtToken;
@@ -38,7 +39,8 @@ class ApiService {
   }
 
   /// Método genérico para requisições GET.
-  Future<Response> get(String endpoint, {Map<String, dynamic>? queryParameters}) async {
+  Future<Response> get(String endpoint,
+      {Map<String, dynamic>? queryParameters}) async {
     try {
       return await _dio.get(
         endpoint,
@@ -86,14 +88,13 @@ class ApiService {
       final token = response.data['token'];
       if (token != null && token is String && token.isNotEmpty) {
         await TokenManager.saveToken(token);
+        await TokenManager.saveCredentials(username, password);
       }
       return response;
     } catch (e) {
       rethrow;
     }
   }
-
-
 
   // Monta as opções de requisição, incluindo o header Authorization se o token estiver presente.
   Options _buildOptions() {
@@ -120,9 +121,9 @@ class ApiService {
         endpoint,
         options: Options(
           headers: {
-            'Accept': '*/*',  // Aceita qualquer tipo ao invés de forçar JSON
+            'Accept': '*/*', // Aceita qualquer tipo ao invés de forçar JSON
           },
-          responseType: ResponseType.plain,  // Resposta é texto puro (BASE64)
+          responseType: ResponseType.plain, // Resposta é texto puro (BASE64)
         ),
       );
     } catch (e) {
@@ -137,7 +138,6 @@ class ApiService {
       rethrow;
     }
   }
-
 
   Future<Response> getHistory() async {
     try {
