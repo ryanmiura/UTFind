@@ -32,7 +32,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
           }
 
           if (vm.state == HistoryLoadingState.error) {
-            return Center(child: Text(vm.errorMessage ?? 'Erro ao carregar histórico'));
+            return Center(
+                child: Text(vm.errorMessage ?? 'Erro ao carregar histórico'));
           }
 
           if (vm.history.isEmpty) {
@@ -40,23 +41,31 @@ class _HistoryScreenState extends State<HistoryScreen> {
           }
 
           final keys = vm.groupedHistory.keys.toList();
-          keys.sort((a, b) => b.compareTo(a)); // Ordenação decrescente de semestres (2025/1 -> 2022/1)
+          keys.sort((a, b) => b.compareTo(
+              a)); // Ordenação decrescente de semestres (2025/1 -> 2022/1)
 
-          return ListView.builder(
-            itemCount: keys.length,
-            itemBuilder: (context, index) {
-              final semester = keys[index];
-              final entries = vm.groupedHistory[semester]!;
-              
-              return ExpansionTile(
-                title: Text(
-                  semester,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-                initiallyExpanded: index == 0, // Primeiro expandido por padrão
-                children: entries.map((entry) => _buildHistoryItem(entry)).toList(),
-              );
-            },
+          return RefreshIndicator(
+            onRefresh: () => vm.loadHistory(),
+            child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: keys.length,
+              itemBuilder: (context, index) {
+                final semester = keys[index];
+                final entries = vm.groupedHistory[semester]!;
+
+                return ExpansionTile(
+                  title: Text(
+                    semester,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  initiallyExpanded:
+                      index == 0, // Primeiro expandido por padrão
+                  children:
+                      entries.map((entry) => _buildHistoryItem(entry)).toList(),
+                );
+              },
+            ),
           );
         },
       ),
@@ -83,13 +92,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: Icon(statusIcon, color: statusColor),
-        title: Text(entry.subjectName, style: const TextStyle(fontWeight: FontWeight.w500)),
+        title: Text(entry.subjectName,
+            style: const TextStyle(fontWeight: FontWeight.w500)),
         subtitle: Text(entry.statusDescription),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            if (entry.grade != '-') 
+            if (entry.grade != '-')
               Text(
                 'Nota: ${entry.grade}',
                 style: const TextStyle(fontWeight: FontWeight.bold),
