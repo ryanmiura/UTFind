@@ -7,6 +7,8 @@ import 'package:utfind/viewmodels/curriculum_vm.dart';
 import 'package:utfind/viewmodels/ru_extract_vm.dart';
 import 'package:utfind/viewmodels/units_vm.dart';
 import 'package:utfind/views/login_screen.dart';
+import 'package:utfind/homepage.dart';
+import 'package:utfind/viewmodels/login_vm.dart';
 
 Future<void> main() async {
   // Carrega o arquivo .env
@@ -36,8 +38,53 @@ class MyApp extends StatelessWidget {
           //useMaterial3: true,
           primarySwatch: Colors.amber,
         ),
-        home: const LoginScreen(),
+        home: const AuthWrapper(),
       ),
+    );
+  }
+}
+
+/// Wrapper que avalia se existem credenciais e tenta o login automático.
+class AuthWrapper extends StatefulWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  late Future<bool> _loginFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    // Instancia o LoginViewModel pontualmente apenas para tentar o login
+    final loginVM = LoginViewModel();
+    _loginFuture = loginVM.tryAutomaticLogin();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: _loginFuture,
+      builder: (context, snapshot) {
+        // Exibe loader enquanto a verificação é feita
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        // Se o login automático retornou true, vai para HomePage
+        if (snapshot.hasData && snapshot.data == true) {
+          return const HomePage();
+        }
+
+        // Se retornou false ou ocorreu erro, vai para LoginScreen
+        return const LoginScreen();
+      },
     );
   }
 }
