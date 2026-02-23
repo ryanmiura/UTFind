@@ -12,7 +12,11 @@ import 'package:utfind/viewmodels/login_vm.dart';
 
 Future<void> main() async {
   // Carrega o arquivo .env
-  await dotenv.load(fileName: ".env");
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    debugPrint("Failed to load .env file: $e");
+  }
   runApp(const MyApp());
 }
 
