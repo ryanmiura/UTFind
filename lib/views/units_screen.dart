@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:map_launcher/map_launcher.dart';
 import '../viewmodels/units_vm.dart';
 import '../models/campus_unit.dart';
 
@@ -99,12 +100,68 @@ class _UnitsScreenState extends State<UnitsScreen> {
                 ),
                 const SizedBox(width: 8),
                 FilledButton.icon(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content:
-                              Text('Abrir mapa: ${unit.lat}, ${unit.long}')),
-                    );
+                  onPressed: () async {
+                    try {
+                      final lat = double.parse(unit.lat.replaceAll(',', '.'));
+                      final lng = double.parse(unit.long.replaceAll(',', '.'));
+                      final title = unit.name;
+
+                      final availableMaps = await MapLauncher.installedMaps;
+
+                      if (availableMaps.isEmpty) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'Nenhum aplicativo de mapas instalado.')),
+                          );
+                        }
+                        return;
+                      }
+
+                      if (availableMaps.length == 1) {
+                        await availableMaps.first.showMarker(
+                          coords: Coords(lat, lng),
+                          title: title,
+                        );
+                        return;
+                      }
+
+                      if (context.mounted) {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SafeArea(
+                              child: SingleChildScrollView(
+                                child: Wrap(
+                                  children: <Widget>[
+                                    for (var map in availableMaps)
+                                      ListTile(
+                                        onTap: () {
+                                          map.showMarker(
+                                            coords: Coords(lat, lng),
+                                            title: title,
+                                          );
+                                          Navigator.pop(context);
+                                        },
+                                        title: Text(map.mapName),
+                                        leading: const Icon(Icons.map),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Erro ao abrir o mapa.')),
+                        );
+                      }
+                    }
                   },
                   icon: const Icon(Icons.map),
                   label: const Text('Mapa'),
