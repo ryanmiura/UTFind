@@ -47,3 +47,16 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // Other dependencies can go here if needed in the future
+}
+
+// Ensure all configurations use the forced versions
+configurations.all {
+    resolutionStrategy {
+        force("androidx.browser:browser:1.8.0")
+        force("androidx.core:core:1.15.0")
+        force("androidx.core:core-ktx:1.15.0")
+    }
+}
