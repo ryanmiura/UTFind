@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:map_launcher/map_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../viewmodels/units_vm.dart';
 import '../models/campus_unit.dart';
 
@@ -90,10 +91,30 @@ class _UnitsScreenState extends State<UnitsScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton.icon(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Ligar para ${unit.phone}')),
-                    );
+                  onPressed: () async {
+                    if (unit.phone.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Telefone não disponível')),
+                      );
+                      return;
+                    }
+
+                    final phoneParams =
+                        unit.phone.replaceAll(RegExp(r'[^0-9+]'), '');
+                    final url = Uri.parse('tel:$phoneParams');
+
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url);
+                    } else {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content:
+                                  Text('Não foi possível abrir o discador.')),
+                        );
+                      }
+                    }
                   },
                   icon: const Icon(Icons.phone),
                   label: const Text('Ligar'),
