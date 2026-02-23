@@ -33,10 +33,12 @@ class _LoginScreenBody extends StatelessWidget {
               children: [
                 // Logo
                 Image.asset(
-                  'assets/utf-logo.png',
-                  height: 120,
+                  'assets/utfind-logo3.png',
+                  height: 300,
+                  width: double.infinity,
+                  fit: BoxFit.contain,
                 ),
-                const SizedBox(height: 48),
+                const SizedBox(height: 16),
 
                 // Campo R.A.
                 TextField(
