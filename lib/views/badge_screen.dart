@@ -59,7 +59,15 @@ class BadgeScreen extends StatelessWidget {
                               topRight: Radius.circular(20.0),
                             ),
                           ),
-                          child: Image.asset('assets/utf-logo.png'),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: Center(
+                            child: Image.asset(
+                              'assets/utflogo.png',
+                              fit: BoxFit.contain,
+                              height: 70,
+                            ),
+                          ),
                         ),
                         // Middle yellow section
                         Container(
