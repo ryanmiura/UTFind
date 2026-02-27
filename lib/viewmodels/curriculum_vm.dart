@@ -28,8 +28,17 @@ class CurriculumViewModel extends ChangeNotifier {
   int get totalHours => _totalHours;
   int get completedHours => _completedHours;
 
-  Future<void> loadCurriculum() async {
+  Future<void> loadCurriculum({bool forceRefresh = false}) async {
     if (_state == CurriculumLoadingState.loading) return;
+
+    // Retorna os dados em cache se não for forceRefresh
+    if (!forceRefresh && _curriculum.isNotEmpty) {
+      if (_state != CurriculumLoadingState.loaded) {
+        _state = CurriculumLoadingState.loaded;
+        notifyListeners();
+      }
+      return;
+    }
 
     _state = CurriculumLoadingState.loading;
     _errorMessage = null;
