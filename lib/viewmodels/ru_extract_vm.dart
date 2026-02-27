@@ -38,8 +38,17 @@ class RUExtractViewModel extends ChangeNotifier {
   int get dinnerCount => _dinnerCount;
   String get filterType => _filterType;
 
-  Future<void> loadMeals() async {
+  Future<void> loadMeals({bool forceRefresh = false}) async {
     if (_state == RULoadingState.loading) return;
+
+    // Se não for um refresh forçado e já tivermos dados, não faz nada
+    if (!forceRefresh && _allMeals.isNotEmpty) {
+      if (_state != RULoadingState.loaded) {
+        _state = RULoadingState.loaded;
+        notifyListeners();
+      }
+      return;
+    }
 
     _state = RULoadingState.loading;
     _errorMessage = null;

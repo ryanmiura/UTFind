@@ -19,8 +19,17 @@ class UnitsViewModel extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   List<CampusUnit> get units => _units;
 
-  Future<void> loadUnits() async {
+  Future<void> loadUnits({bool forceRefresh = false}) async {
     if (_state == UnitsLoadingState.loading) return;
+
+    // Retorna os dados em cache se não for forceRefresh
+    if (!forceRefresh && _units.isNotEmpty) {
+      if (_state != UnitsLoadingState.loaded) {
+        _state = UnitsLoadingState.loaded;
+        notifyListeners();
+      }
+      return;
+    }
 
     _state = UnitsLoadingState.loading;
     _errorMessage = null;

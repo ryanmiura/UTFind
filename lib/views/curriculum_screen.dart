@@ -48,7 +48,7 @@ class _CurriculumScreenState extends State<CurriculumScreen> {
               _buildProgressCard(vm),
               Expanded(
                 child: RefreshIndicator(
-                  onRefresh: () => vm.loadCurriculum(),
+                  onRefresh: () => vm.loadCurriculum(forceRefresh: true),
                   child: ListView.builder(
                     physics: const AlwaysScrollableScrollPhysics(),
                     itemCount: keys.length,

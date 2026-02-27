@@ -43,7 +43,7 @@ class _UnitsScreenState extends State<UnitsScreen> {
           }
 
           return RefreshIndicator(
-            onRefresh: () => vm.loadUnits(),
+            onRefresh: () => vm.loadUnits(forceRefresh: true),
             child: ListView.builder(
               physics: const AlwaysScrollableScrollPhysics(),
               itemCount: vm.units.length,

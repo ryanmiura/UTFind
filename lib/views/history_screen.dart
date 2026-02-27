@@ -45,7 +45,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               a)); // Ordenação decrescente de semestres (2025/1 -> 2022/1)
 
           return RefreshIndicator(
-            onRefresh: () => vm.loadHistory(),
+            onRefresh: () => vm.loadHistory(forceRefresh: true),
             child: ListView.builder(
               physics: const AlwaysScrollableScrollPhysics(),
               itemCount: keys.length,
