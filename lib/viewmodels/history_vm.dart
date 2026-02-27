@@ -21,8 +21,17 @@ class HistoryViewModel extends ChangeNotifier {
   List<HistoryEntry> get history => _history;
   Map<String, List<HistoryEntry>> get groupedHistory => _groupedHistory;
 
-  Future<void> loadHistory() async {
+  Future<void> loadHistory({bool forceRefresh = false}) async {
     if (_state == HistoryLoadingState.loading) return;
+
+    // Retorna os dados em cache se não for forceRefresh
+    if (!forceRefresh && _history.isNotEmpty) {
+      if (_state != HistoryLoadingState.loaded) {
+        _state = HistoryLoadingState.loaded;
+        notifyListeners();
+      }
+      return;
+    }
 
     _state = HistoryLoadingState.loading;
     _errorMessage = null;
