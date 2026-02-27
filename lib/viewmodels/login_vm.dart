@@ -41,17 +41,17 @@ class LoginViewModel extends ChangeNotifier {
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout ||
           e.type == DioExceptionType.connectionError) {
-        _erro = 'Erro de conexão. Verifique sua internet.';
+        _erro = 'Erro de conexão: ${e.message}';
       } else if (e.response?.statusCode == 401) {
-        _erro = 'R.A. ou senha inválidos';
+        _erro = 'R.A. ou senha inválidos (401)';
       } else {
-        _erro = 'Erro ao autenticar. Tente novamente.';
+        _erro = 'Erro API (${e.response?.statusCode}): ${e.message}';
       }
       notifyListeners();
       return false;
     } catch (e) {
       _loading = false;
-      _erro = 'Ocorreu um erro inesperado';
+      _erro = 'Erro inesperado: ${e.toString()}';
       notifyListeners();
       return false;
     }

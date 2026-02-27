@@ -2,7 +2,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:utfind/utils/token_manager.dart';
 
-final String baseUrl = dotenv.env['API_BASE_URL'] ?? '';
+String get baseUrl {
+  String url = dotenv.env['API_BASE_URL'] ?? '';
+  if (url.isNotEmpty && !url.endsWith('/')) {
+    url += '/';
+  }
+  return url;
+}
 
 class ApiService {
   final Dio _dio;
@@ -68,7 +74,7 @@ class ApiService {
   /// Realiza autenticação (login) via PUT em /auth..
   Future<Response> login(String username, String password) async {
     try {
-      const String endpoint = '/auth';
+      const String endpoint = 'auth';
 
       final data = {
         'username': username,
@@ -107,7 +113,7 @@ class ApiService {
 
   Future<Response> getStudentData() async {
     try {
-      const String endpoint = '/dados';
+      const String endpoint = 'dados';
       return await _dio.get(endpoint);
     } catch (e) {
       rethrow;
@@ -116,7 +122,7 @@ class ApiService {
 
   Future<Response> getStudentPhoto() async {
     try {
-      const String endpoint = '/fotoCracha';
+      const String endpoint = 'fotoCracha';
       return await _dio.get(
         endpoint,
         options: Options(
@@ -133,7 +139,7 @@ class ApiService {
 
   Future<Response> getRUMeals() async {
     try {
-      return await _dio.get('/rurefeicao');
+      return await _dio.get('rurefeicao');
     } catch (e) {
       rethrow;
     }
@@ -153,7 +159,7 @@ class ApiService {
     try {
       final courseId = await TokenManager.getCourseId();
       if (courseId == null) throw Exception('ID do curso não encontrado');
-      return await _dio.get('/$courseId/matriz');
+      return await _dio.get('$courseId/matriz');
     } catch (e) {
       rethrow;
     }
@@ -161,7 +167,7 @@ class ApiService {
 
   Future<Response> getUnits() async {
     try {
-      return await _dio.get('/unidades');
+      return await _dio.get('unidades');
     } catch (e) {
       rethrow;
     }
