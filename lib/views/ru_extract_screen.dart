@@ -49,7 +49,7 @@ class _RUExtractScreenState extends State<RUExtractScreen> {
               _buildFilterChips(vm),
               Expanded(
                 child: RefreshIndicator(
-                  onRefresh: () => vm.loadMeals(),
+                  onRefresh: () => vm.loadMeals(forceRefresh: true),
                   child: ListView.builder(
                     physics: const AlwaysScrollableScrollPhysics(),
                     itemCount: keys.length,
