@@ -144,7 +144,44 @@ class _SubjectCard extends StatelessWidget {
             child: Text('⚠️ Atenção: Limite de faltas próximo!', 
                 style: TextStyle(fontSize: 11, color: Colors.orange, fontWeight: FontWeight.w500)),
           ),
+        _buildRemainingAbsencesBadge(),
       ],
+    );
+  }
+
+  Widget _buildRemainingAbsencesBadge() {
+    final remaining = subject.remainingAbsences;
+    if (remaining == null) return const SizedBox.shrink();
+
+    final isCritical = remaining <= 2;
+    final color = isCritical ? Colors.red[700] : Colors.blue[700];
+    final bgColor = isCritical ? Colors.red[50] : Colors.blue[50];
+
+    return Container(
+      margin: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color!.withOpacity(0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.info_outline, size: 16, color: color),
+          const SizedBox(width: 8),
+          Text(
+            remaining > 0 
+                ? 'Você ainda pode faltar $remaining vez${remaining > 1 ? 'es' : ''}'
+                : 'Você não pode mais faltar!',
+            style: TextStyle(
+              color: color,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

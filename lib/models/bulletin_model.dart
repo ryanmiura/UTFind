@@ -70,6 +70,19 @@ class BulletinSubject {
     return attendanceRate < 0.75;
   }
 
+  int? get maxAbsencesAllowed {
+    if (classesPlanned == null || classesPlanned! <= 0) return null;
+    // UTFPR exige 75% de presença, logo 25% de faltas permitidas
+    return (classesPlanned! * 0.25).floor();
+  }
+
+  int? get remainingAbsences {
+    final max = maxAbsencesAllowed;
+    if (max == null) return null;
+    final remaining = max - absences;
+    return remaining < 0 ? 0 : remaining;
+  }
+
   factory BulletinSubject.fromJson(Map<String, dynamic> json) {
     var list = json['avaliacoes'] as List? ?? [];
     List<Evaluation> evals = list.map((i) => Evaluation.fromJson(i)).toList();
