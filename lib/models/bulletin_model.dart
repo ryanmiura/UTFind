@@ -83,6 +83,16 @@ class BulletinSubject {
     return remaining < 0 ? 0 : remaining;
   }
 
+  double? get studentAverage {
+    if (avaliacoes.isEmpty) return null;
+    final grades = avaliacoes
+        .map((e) => e.numericGrade)
+        .whereType<double>()
+        .toList();
+    if (grades.isEmpty) return null;
+    return grades.reduce((a, b) => a + b) / grades.length;
+  }
+
   factory BulletinSubject.fromJson(Map<String, dynamic> json) {
     var list = json['avaliacoes'] as List? ?? [];
     List<Evaluation> evals = list.map((i) => Evaluation.fromJson(i)).toList();

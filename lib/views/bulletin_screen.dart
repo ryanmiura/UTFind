@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utfind/models/bulletin_model.dart';
 import 'package:utfind/viewmodels/bulletin_vm.dart';
+import 'package:utfind/views/comparison_chart_screen.dart';
 
 class BulletinScreen extends StatefulWidget {
   const BulletinScreen({super.key});
@@ -25,6 +26,23 @@ class _BulletinScreenState extends State<BulletinScreen> {
       appBar: AppBar(
         title: const Text('Desempenho Acadêmico'),
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.bar_chart),
+            tooltip: 'Ver Comparativo',
+            onPressed: () {
+              final vm = context.read<BulletinViewModel>();
+              if (vm.subjects.isNotEmpty) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ComparisonChartScreen(subjects: vm.subjects),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
       ),
       body: Consumer<BulletinViewModel>(
         builder: (context, vm, child) {
