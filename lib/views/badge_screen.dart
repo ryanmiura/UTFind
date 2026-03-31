@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/student_vm.dart';
 import 'badge_themes/classic_badge_theme.dart';
+import 'badge_themes/modern_gradient_badge_theme.dart';
+import 'badge_themes/neo_brutalism_badge_theme.dart';
 
 class BadgeScreen extends StatefulWidget {
   const BadgeScreen({Key? key}) : super(key: key);
@@ -67,17 +69,26 @@ class _BadgeScreenState extends State<BadgeScreen> {
                         ],
                       ),
                     ),
-                    // Mantido o seletor para no futuro adicionar mais opções como:
-                    // const PopupMenuItem(
-                    //   value: 'modern',
-                    //   child: Row(
-                    //     children: [
-                    //       Icon(Icons.auto_awesome, size: 20),
-                    //       SizedBox(width: 10),
-                    //       Text('Tema Moderno'),
-                    //     ],
-                    //   ),
-                    // ),
+                    const PopupMenuItem(
+                      value: 'modern_gradient',
+                      child: Row(
+                        children: [
+                          Icon(Icons.gradient, size: 20),
+                          SizedBox(width: 10),
+                          Text('Tema Gradient Wave'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 'neo_brutalism',
+                      child: Row(
+                        children: [
+                          Icon(Icons.layers, size: 20),
+                          SizedBox(width: 10),
+                          Text('Tema Neo Brutal'),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -91,6 +102,10 @@ class _BadgeScreenState extends State<BadgeScreen> {
                   children: [
                     if (_selectedTheme == 'classic')
                       ClassicBadgeTheme(vm: vm)
+                    else if (_selectedTheme == 'modern_gradient')
+                      ModernGradientBadgeTheme(vm: vm)
+                    else if (_selectedTheme == 'neo_brutalism')
+                      NeoBrutalismBadgeTheme(vm: vm)
                     else
                       ClassicBadgeTheme(vm: vm), // Fallback caso selecione um tema ainda nao listado/implementado
                     const SizedBox(height: 30),
