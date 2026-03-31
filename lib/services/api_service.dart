@@ -172,4 +172,14 @@ class ApiService {
       rethrow;
     }
   }
+
+  Future<Response> getSchedule() async {
+    try {
+      final courseId = await TokenManager.getCourseId();
+      if (courseId == null) throw Exception('ID do curso não encontrado');
+      return await _dio.get('$courseId/horario');
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
