@@ -98,8 +98,37 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(height: 24),
           _buildNextClassWidget(),
+          const SizedBox(height: 16),
+          _buildQuickActions(),
         ],
       ),
+    );
+  }
+
+  Widget _buildQuickActions() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Acesso Rápido',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: ListTile(
+            leading: const CircleAvatar(
+              backgroundColor: Colors.blueAccent,
+              child: Icon(Icons.assessment, color: Colors.white),
+            ),
+            title: const Text('Boletim e Frequência'),
+            subtitle: const Text('Acompanhe suas notas e faltas'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.pushNamed(context, '/bulletin'),
+          ),
+        ),
+      ],
     );
   }
 
