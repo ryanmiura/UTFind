@@ -127,80 +127,155 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }
 
   Widget _buildClassCard(DisplayClass c, bool hasConflict) {
-    return Card(
-      elevation: 2,
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: hasConflict 
-          ? const BorderSide(color: Colors.red, width: 2) 
-          : BorderSide.none,
+    final now = DateTime.now();
+    final currentTimeStr =
+        "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
+
+    // Verifica se a aula está acontecendo agora
+    bool isNow = !c.isAsynchronous &&
+        currentTimeStr.compareTo(c.startTime) >= 0 &&
+        currentTimeStr.compareTo(c.endTime) <= 0;
+
+    // Define cor baseada no turno ou status
+    Color accentColor = isNow ? Colors.amber : Colors.blueAccent;
+    if (hasConflict) accentColor = Colors.red;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        border: isNow 
+            ? Border.all(color: Colors.amber, width: 2) 
+            : (hasConflict ? Border.all(color: Colors.red, width: 1) : null),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      child: IntrinsicHeight(
+        child: Row(
           children: [
-            if (hasConflict)
-              const Padding(
-                padding: EdgeInsets.only(bottom: 8.0),
-                child: Row(
+            // Barra lateral colorida (Timeline feel)
+            Container(
+              width: 6,
+              decoration: BoxDecoration(
+                color: accentColor,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.warning, color: Colors.red, size: 16),
-                    SizedBox(width: 4),
-                    Text('Conflito de horário!', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (!c.isAsynchronous)
+                          Text(
+                            '${c.startTime} — ${c.endTime}',
+                            style: TextStyle(
+                              color: accentColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                        if (isNow)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.amber,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Text(
+                              'AGORA',
+                              style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87),
+                            ),
+                          ),
+                        if (c.isAsynchronous)
+                          const Text(
+                            'ASSÍNCRONA',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 11,
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      c.className,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 16,
+                      runSpacing: 8,
+                      children: [
+                        _buildInfoItem(Icons.location_on_outlined, c.room),
+                        _buildInfoItem(Icons.person_outline, c.teacher),
+                      ],
+                    ),
+                    if (hasConflict)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: Row(
+                          children: const [
+                            Icon(Icons.warning_amber_rounded,
+                                color: Colors.red, size: 16),
+                            SizedBox(width: 4),
+                            Text(
+                              'Conflito detectado',
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    c.className,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                if (!c.isAsynchronous)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      '${c.startTime} - ${c.endTime}',
-                      style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                const Icon(Icons.location_on, size: 16, color: Colors.grey),
-                const SizedBox(width: 4),
-                Text(c.room, style: const TextStyle(color: Colors.black54)),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                const Icon(Icons.person, size: 16, color: Colors.grey),
-                const SizedBox(width: 4),
-                Expanded(
-                  child: Text(
-                    c.teacher,
-                    style: const TextStyle(color: Colors.black54),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildInfoItem(IconData icon, String text) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 16, color: Colors.grey[600]),
+        const SizedBox(width: 4),
+        Flexible(
+          child: Text(
+            text,
+            style: TextStyle(color: Colors.grey[700], fontSize: 13),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }
