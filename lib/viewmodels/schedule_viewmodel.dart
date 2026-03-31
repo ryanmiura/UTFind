@@ -148,6 +148,32 @@ class ScheduleViewModel extends ChangeNotifier {
     return null;
   }
 
+  String getTimeUntilNextClass(DisplayClass nextClass) {
+    final now = DateTime.now();
+    final parts = nextClass.startTime.split(':');
+    final startHour = int.parse(parts[0]);
+    final startMinute = int.parse(parts[1]);
+
+    final startDateTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      startHour,
+      startMinute,
+    );
+
+    final difference = startDateTime.difference(now);
+    final minutes = difference.inMinutes;
+
+    if (minutes < 0) return "";
+    if (minutes < 60) return "começa em $minutes min";
+    
+    final hours = minutes ~/ 60;
+    final remainingMinutes = minutes % 60;
+    if (remainingMinutes == 0) return "começa em $hours h";
+    return "começa em $hours h e $remainingMinutes min";
+  }
+
   DayOfWeek _getNowDayOfWeek(int weekday) {
     switch (weekday) {
       case DateTime.monday: return DayOfWeek.seg;

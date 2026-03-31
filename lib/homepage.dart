@@ -113,6 +113,7 @@ class _HomePageState extends State<HomePage> {
         final next = vm.getNextClass();
         if (next == null) {
           return const Card(
+            elevation: 2,
             child: ListTile(
               leading: Icon(Icons.event_available, color: Colors.green),
               title: Text('Nenhuma aula restante hoje'),
@@ -121,16 +122,83 @@ class _HomePageState extends State<HomePage> {
           );
         }
 
+        final timeRemaining = vm.getTimeUntilNextClass(next);
+
         return Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: next.color.withOpacity(0.3), width: 1),
+          ),
           child: ListTile(
-            leading: const Icon(Icons.upcoming, color: Colors.orange),
-            title: const Text('Próxima Aula'),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            leading: CircleAvatar(
+              backgroundColor: next.color.withOpacity(0.2),
+              child: Icon(Icons.school, color: next.color),
+            ),
+            title: Row(
               children: [
-                Text(next.className, style: const TextStyle(fontWeight: FontWeight.bold)),
-                Text('${next.startTime} - ${next.room}'),
+                const Text(
+                  'Próxima Aula',
+                  style: TextStyle(
+                    fontSize: 14, 
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                ),
+                if (timeRemaining.isNotEmpty) ...[
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      timeRemaining,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange,
+                      ),
+                    ),
+                  ),
+                ],
               ],
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    next.className,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(Icons.access_time, size: 14, color: Colors.grey[600]),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${next.startTime} às ${next.endTime}',
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
+                      const SizedBox(width: 12),
+                      Icon(Icons.location_on_outlined, size: 14, color: Colors.grey[600]),
+                      const SizedBox(width: 4),
+                      Text(
+                        next.room,
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
