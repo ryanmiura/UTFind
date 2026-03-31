@@ -41,6 +41,7 @@ dependencies:
   barcode_widget: ^2.0.4
   url_launcher: ^6.3.2
   map_launcher: ^4.4.3
+  fl_chart: ^1.2.0
 
 
 dev_dependencies:

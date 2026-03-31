@@ -10,6 +10,8 @@ import 'package:utfind/viewmodels/schedule_viewmodel.dart';
 import 'package:utfind/views/login_screen.dart';
 import 'package:utfind/homepage.dart';
 import 'package:utfind/viewmodels/login_vm.dart';
+import 'package:utfind/viewmodels/bulletin_vm.dart';
+import 'package:utfind/views/bulletin_screen.dart';
 
 Future<void> main() async {
   // Carrega o arquivo .env
@@ -18,7 +20,21 @@ Future<void> main() async {
   } catch (e) {
     debugPrint("Failed to load .env file: $e");
   }
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => StudentViewModel()),
+        ChangeNotifierProvider(create: (_) => HistoryViewModel()),
+        ChangeNotifierProvider(create: (_) => CurriculumViewModel()),
+        ChangeNotifierProvider(create: (_) => RUExtractViewModel()),
+        ChangeNotifierProvider(create: (_) => UnitsViewModel()),
+        ChangeNotifierProvider(create: (_) => ScheduleViewModel()),
+        ChangeNotifierProvider(create: (_) => LoginViewModel()),
+        ChangeNotifierProvider(create: (_) => BulletinViewModel()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -26,26 +42,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        // Provider global para dados do estudante
-        ChangeNotifierProvider(create: (_) => StudentViewModel()),
-        ChangeNotifierProvider(create: (_) => HistoryViewModel()),
-        ChangeNotifierProvider(create: (_) => CurriculumViewModel()),
-        ChangeNotifierProvider(create: (_) => RUExtractViewModel()),
-        ChangeNotifierProvider(create: (_) => UnitsViewModel()),
-        ChangeNotifierProvider(create: (_) => ScheduleViewModel()),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'UTFind',
-        theme: ThemeData(
-          //colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
-          //useMaterial3: true,
-          primarySwatch: Colors.amber,
-        ),
-        home: const AuthWrapper(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'UTFind',
+      theme: ThemeData(
+        //colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
+        //useMaterial3: true,
+        primarySwatch: Colors.amber,
       ),
+      home: const AuthWrapper(),
+      routes: {
+        '/login': (context) => const LoginScreen(),
+        '/home': (context) => const HomePage(),
+        '/bulletin': (context) => const BulletinScreen(),
+      },
     );
   }
 }
