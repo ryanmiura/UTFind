@@ -9,10 +9,17 @@ class ScheduleViewModel extends ChangeNotifier {
   List<ScheduleClass> _allClasses = [];
   bool _isLoading = false;
   String? _error;
+  bool _isWeeklyView = false;
 
   List<ScheduleClass> get allClasses => _allClasses;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  bool get isWeeklyView => _isWeeklyView;
+
+  void toggleView() {
+    _isWeeklyView = !_isWeeklyView;
+    notifyListeners();
+  }
 
   Future<void> fetchSchedule() async {
     _isLoading = true;
@@ -51,6 +58,7 @@ class ScheduleViewModel extends ChangeNotifier {
                 : "Não informado",
             isAsynchronous: false,
             color: _generateColorForClass(scheduleClass.discNomeVc),
+            day: day,
           ));
         }
       }
@@ -186,6 +194,31 @@ class ScheduleViewModel extends ChangeNotifier {
       default: return DayOfWeek.seg;
     }
   }
+
+  List<DisplayClass> getWeeklySchedule() {
+    List<DisplayClass> weekly = [];
+    final days = [
+      DayOfWeek.seg,
+      DayOfWeek.ter,
+      DayOfWeek.qua,
+      DayOfWeek.qui,
+      DayOfWeek.sex,
+      DayOfWeek.sab
+    ];
+
+    for (var day in days) {
+      final dayClasses = getClassesForDay(day);
+      for (var c in dayClasses) {
+        weekly.add(c); // c já tem o day configurado em getClassesForDay se atualizarmos lá
+      }
+    }
+
+    // Adiciona as assíncronas ao final da lista semanal
+    final asyncClasses = getAsynchronousClasses();
+    weekly.addAll(asyncClasses);
+
+    return weekly;
+  }
 }
 
 // Flat structure for easy UI rendering
@@ -197,6 +230,7 @@ class DisplayClass {
   final String teacher;
   final bool isAsynchronous;
   final Color color;
+  final DayOfWeek? day;
 
   DisplayClass({
     required this.className,
@@ -206,5 +240,6 @@ class DisplayClass {
     required this.teacher,
     required this.isAsynchronous,
     required this.color,
+    this.day,
   });
 }

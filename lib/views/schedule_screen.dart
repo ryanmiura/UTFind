@@ -23,52 +23,114 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   Widget build(BuildContext context) {
     // Calcula o index inicial baseado no dia da semana (SEG=0, ..., SAB=5, EAD=6)
     int initialIndex = DateTime.now().weekday - 1;
-    if (initialIndex < 0 || initialIndex > 5) initialIndex = 6; 
+    if (initialIndex < 0 || initialIndex > 5) initialIndex = 6;
 
-    return DefaultTabController(
-      length: 7, // SEG, TER, QUA, QUI, SEX, SAB, EAD
-      initialIndex: initialIndex,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Horários'),
-          bottom: const TabBar(
-            isScrollable: false,
-            labelPadding: EdgeInsets.zero,
-            indicatorSize: TabBarIndicatorSize.label,
-            tabs: [
-              Tab(child: Text('SEG', style: TextStyle(fontSize: 11))),
-              Tab(child: Text('TER', style: TextStyle(fontSize: 11))),
-              Tab(child: Text('QUA', style: TextStyle(fontSize: 11))),
-              Tab(child: Text('QUI', style: TextStyle(fontSize: 11))),
-              Tab(child: Text('SEX', style: TextStyle(fontSize: 11))),
-              Tab(child: Text('SÁB', style: TextStyle(fontSize: 11))),
-              Tab(child: Text('EAD', style: TextStyle(fontSize: 11))),
-            ],
-          ),
-        ),
-        body: Consumer<ScheduleViewModel>(
-          builder: (context, vm, child) {
-            if (vm.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (vm.error != null) {
-              return Center(child: Text('Erro: ${vm.error}'));
-            }
-
-            return TabBarView(
-              children: [
-                _buildDayList(vm, DayOfWeek.seg),
-                _buildDayList(vm, DayOfWeek.ter),
-                _buildDayList(vm, DayOfWeek.qua),
-                _buildDayList(vm, DayOfWeek.qui),
-                _buildDayList(vm, DayOfWeek.sex),
-                _buildDayList(vm, DayOfWeek.sab),
-                _buildAsynchronousList(vm),
+    return Consumer<ScheduleViewModel>(
+      builder: (context, vm, child) {
+        return DefaultTabController(
+          length: 7, // SEG, TER, QUA, QUI, SEX, SAB, EAD
+          initialIndex: initialIndex,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(vm.isWeeklyView ? 'Minha Semana' : 'Horários'),
+              actions: [
+                IconButton(
+                  icon: Icon(vm.isWeeklyView ? Icons.calendar_today : Icons.view_agenda),
+                  tooltip: vm.isWeeklyView ? 'Ver por dia' : 'Ver semana toda',
+                  onPressed: () => vm.toggleView(),
+                ),
               ],
-            );
-          },
-        ),
-      ),
+              bottom: vm.isWeeklyView
+                  ? null
+                  : const TabBar(
+                      isScrollable: false,
+                      labelPadding: EdgeInsets.zero,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      tabs: [
+                        Tab(child: Text('SEG', style: TextStyle(fontSize: 11))),
+                        Tab(child: Text('TER', style: TextStyle(fontSize: 11))),
+                        Tab(child: Text('QUA', style: TextStyle(fontSize: 11))),
+                        Tab(child: Text('QUI', style: TextStyle(fontSize: 11))),
+                        Tab(child: Text('SEX', style: TextStyle(fontSize: 11))),
+                        Tab(child: Text('SÁB', style: TextStyle(fontSize: 11))),
+                        Tab(child: Text('EAD', style: TextStyle(fontSize: 11))),
+                      ],
+                    ),
+            ),
+            body: vm.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : vm.error != null
+                    ? Center(child: Text('Erro: ${vm.error}'))
+                    : vm.isWeeklyView
+                        ? _buildWeeklySummary(vm)
+                        : TabBarView(
+                            children: [
+                              _buildDayList(vm, DayOfWeek.seg),
+                              _buildDayList(vm, DayOfWeek.ter),
+                              _buildDayList(vm, DayOfWeek.qua),
+                              _buildDayList(vm, DayOfWeek.qui),
+                              _buildDayList(vm, DayOfWeek.sex),
+                              _buildDayList(vm, DayOfWeek.sab),
+                              _buildAsynchronousList(vm),
+                            ],
+                          ),
+          ),
+        );
+      },
+    );
+  }
+
+  String _getDayLabel(DayOfWeek day) {
+    switch (day) {
+      case DayOfWeek.seg: return "SEGUNDA-FEIRA";
+      case DayOfWeek.ter: return "TERÇA-FEIRA";
+      case DayOfWeek.qua: return "QUARTA-FEIRA";
+      case DayOfWeek.qui: return "QUINTA-FEIRA";
+      case DayOfWeek.sex: return "SEXTA-FEIRA";
+      case DayOfWeek.sab: return "SÁBADO";
+      default: return "OUTROS / ASSÍNCRONAS";
+    }
+  }
+
+  Widget _buildWeeklySummary(ScheduleViewModel vm) {
+    final weeklyClasses = vm.getWeeklySchedule();
+    if (weeklyClasses.isEmpty) {
+      return _buildEmptyState('Nenhuma aula cadastrada na semana.');
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: weeklyClasses.length,
+      itemBuilder: (context, index) {
+        final c = weeklyClasses[index];
+        // Nova condição para o cabeçalho: 
+        // 1. É o primeiro item da lista OU 
+        // 2. O dia mudou OU 
+        // 3. O item anterior não era assíncrono e este é (para criar o cabeçalho de assíncronas)
+        bool isNewSection = index == 0 || 
+                           c.day != weeklyClasses[index - 1].day || 
+                           (c.isAsynchronous && !weeklyClasses[index - 1].isAsynchronous);
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (isNewSection)
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0, bottom: 12.0, left: 4.0),
+                child: Text(
+                  c.isAsynchronous ? "EAD / ASSÍNCRONAS" : _getDayLabel(c.day ?? DayOfWeek.seg),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: c.isAsynchronous ? Colors.grey[700] : Colors.grey[600],
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ),
+            _buildClassCard(c, false),
+          ],
+        );
+      },
     );
   }
 
@@ -92,7 +154,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     final classes = vm.getClassesForDay(day);
     if (classes.isEmpty) {
       return _buildEmptyState('Nenhuma aula para este dia.');
-    } // ... existing code ...
+    }
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
@@ -117,7 +179,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     final classes = vm.getAsynchronousClasses();
     if (classes.isEmpty) {
       return _buildEmptyState('Nenhuma disciplina assíncrona.');
-    } // ... existing code ...
+    }
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
