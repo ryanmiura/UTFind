@@ -182,4 +182,14 @@ class ApiService {
       rethrow;
     }
   }
+
+  Future<Response> getBulletin() async {
+    try {
+      final courseId = await TokenManager.getCourseId();
+      if (courseId == null) throw Exception('ID do curso não encontrado');
+      return await _dio.get('$courseId/boletim');
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
