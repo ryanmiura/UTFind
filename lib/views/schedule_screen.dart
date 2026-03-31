@@ -136,8 +136,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         currentTimeStr.compareTo(c.startTime) >= 0 &&
         currentTimeStr.compareTo(c.endTime) <= 0;
 
-    // Define cor baseada no turno ou status
-    Color accentColor = isNow ? Colors.amber : Colors.blueAccent;
+    // Define cor baseada na disciplina ou status
+    Color accentColor = c.color;
+    if (isNow) accentColor = Colors.amber; // Mantemos amber para o que está acontecendo agora
     if (hasConflict) accentColor = Colors.red;
 
     return Container(

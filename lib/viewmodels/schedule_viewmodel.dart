@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:utfind/models/schedule_class.dart';
 import 'package:utfind/services/api_service.dart';
 
@@ -49,6 +50,7 @@ class ScheduleViewModel extends ChangeNotifier {
                 ? scheduleClass.professores.join(", ") 
                 : "Não informado",
             isAsynchronous: false,
+            color: _generateColorForClass(scheduleClass.discNomeVc),
           ));
         }
       }
@@ -83,6 +85,7 @@ class ScheduleViewModel extends ChangeNotifier {
           endTime: current.endTime,
           teacher: previous.teacher,
           isAsynchronous: previous.isAsynchronous,
+          color: previous.color,
         );
       } else {
         merged.add(current);
@@ -105,8 +108,29 @@ class ScheduleViewModel extends ChangeNotifier {
                   ? c.professores.join(", ") 
                   : "Não informado",
               isAsynchronous: true,
+              color: _generateColorForClass(c.discNomeVc),
             ))
         .toList();
+  }
+
+  Color _generateColorForClass(String name) {
+    final List<Color> palette = [
+      Colors.blueAccent,
+      Colors.greenAccent[700]!,
+      Colors.deepPurpleAccent,
+      Colors.orangeAccent[700]!,
+      Colors.pinkAccent,
+      Colors.teal,
+      Colors.indigoAccent,
+      Colors.cyan[700]!,
+    ];
+
+    int hash = 0;
+    for (var i = 0; i < name.length; i++) {
+        hash = name.codeUnitAt(i) + ((hash << 5) - hash);
+    }
+
+    return palette[hash.abs() % palette.length];
   }
 
   DisplayClass? getNextClass() {
@@ -146,6 +170,7 @@ class DisplayClass {
   final String endTime;
   final String teacher;
   final bool isAsynchronous;
+  final Color color;
 
   DisplayClass({
     required this.className,
@@ -154,5 +179,6 @@ class DisplayClass {
     required this.endTime,
     required this.teacher,
     required this.isAsynchronous,
+    required this.color,
   });
 }
