@@ -6,6 +6,7 @@ import 'package:utfind/viewmodels/history_vm.dart';
 import 'package:utfind/viewmodels/curriculum_vm.dart';
 import 'package:utfind/viewmodels/ru_extract_vm.dart';
 import 'package:utfind/viewmodels/units_vm.dart';
+import 'package:utfind/viewmodels/schedule_viewmodel.dart';
 import 'package:utfind/views/login_screen.dart';
 import 'package:utfind/homepage.dart';
 import 'package:utfind/viewmodels/login_vm.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CurriculumViewModel()),
         ChangeNotifierProvider(create: (_) => RUExtractViewModel()),
         ChangeNotifierProvider(create: (_) => UnitsViewModel()),
+        ChangeNotifierProvider(create: (_) => ScheduleViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
