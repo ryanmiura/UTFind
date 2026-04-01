@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/student_vm.dart';
 import 'badge_themes/classic_badge_theme.dart';
+import 'badge_themes/professional_badge_theme.dart';
 import 'badge_themes/modern_gradient_badge_theme.dart';
 import 'badge_themes/neo_brutalism_badge_theme.dart';
 
@@ -70,6 +71,16 @@ class _BadgeScreenState extends State<BadgeScreen> {
                       ),
                     ),
                     const PopupMenuItem(
+                      value: 'professional',
+                      child: Row(
+                        children: [
+                          Icon(Icons.style_outlined, size: 20),
+                          SizedBox(width: 10),
+                          Text('Tema Professional'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem(
                       value: 'modern_gradient',
                       child: Row(
                         children: [
@@ -102,6 +113,8 @@ class _BadgeScreenState extends State<BadgeScreen> {
                   children: [
                     if (_selectedTheme == 'classic')
                       ClassicBadgeTheme(vm: vm)
+                    else if (_selectedTheme == 'professional')
+                      ProfessionalBadgeTheme(vm: vm)
                     else if (_selectedTheme == 'modern_gradient')
                       ModernGradientBadgeTheme(vm: vm)
                     else if (_selectedTheme == 'neo_brutalism')
