@@ -120,7 +120,7 @@ class _BadgeScreenState extends State<BadgeScreen> {
                     else if (_selectedTheme == 'neo_brutalism')
                       NeoBrutalismBadgeTheme(vm: vm)
                     else
-                      ClassicBadgeTheme(vm: vm), // Fallback caso selecione um tema ainda nao listado/implementado
+                      ClassicBadgeTheme(vm: vm), // Fallback
                     const SizedBox(height: 30),
                     const Text(
                       'Passe o crachá no leitor para acesso ao RU',
